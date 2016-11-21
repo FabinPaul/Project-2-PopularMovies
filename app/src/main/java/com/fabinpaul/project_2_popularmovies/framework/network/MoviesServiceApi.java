@@ -1,8 +1,8 @@
-package com.fabinpaul.project_1_popularmovies.framework.network;
+package com.fabinpaul.project_2_popularmovies.framework.network;
 
 import android.support.annotation.StringDef;
 
-import com.fabinpaul.project_1_popularmovies.features.movieshome.data.MovieList;
+import com.fabinpaul.project_2_popularmovies.features.movieshome.data.MovieList;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

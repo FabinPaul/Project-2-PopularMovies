@@ -1,7 +1,7 @@
-package com.fabinpaul.project_1_popularmovies.framework.repository;
+package com.fabinpaul.project_2_popularmovies.framework.repository;
 
-import com.fabinpaul.project_1_popularmovies.features.movieshome.data.Movie;
-import com.fabinpaul.project_1_popularmovies.features.movieshome.data.MovieList;
+import com.fabinpaul.project_2_popularmovies.features.movieshome.data.Movie;
+import com.fabinpaul.project_2_popularmovies.features.movieshome.data.MovieList;
 
 /**
  * Created by Fabin Paul on 11/6/2016 3:35 PM.

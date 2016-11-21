@@ -1,13 +1,13 @@
-package com.fabinpaul.project_1_popularmovies.framework.repository;
+package com.fabinpaul.project_2_popularmovies.framework.repository;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.fabinpaul.project_1_popularmovies.R;
-import com.fabinpaul.project_1_popularmovies.features.movieshome.data.Movie;
-import com.fabinpaul.project_1_popularmovies.features.movieshome.data.MovieList;
-import com.fabinpaul.project_1_popularmovies.framework.network.MoviesServiceInterface;
+import com.fabinpaul.project_2_popularmovies.R;
+import com.fabinpaul.project_2_popularmovies.features.movieshome.data.Movie;
+import com.fabinpaul.project_2_popularmovies.features.movieshome.data.MovieList;
+import com.fabinpaul.project_2_popularmovies.framework.network.MoviesServiceInterface;
 
 import rx.subscriptions.CompositeSubscription;
 

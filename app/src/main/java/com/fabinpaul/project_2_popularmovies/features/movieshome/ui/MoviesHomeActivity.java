@@ -1,10 +1,10 @@
-package com.fabinpaul.project_1_popularmovies.features.movieshome.ui;
+package com.fabinpaul.project_2_popularmovies.features.movieshome.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import com.fabinpaul.project_1_popularmovies.R;
+import com.fabinpaul.project_2_popularmovies.R;
 
 public class MoviesHomeActivity extends AppCompatActivity {
 

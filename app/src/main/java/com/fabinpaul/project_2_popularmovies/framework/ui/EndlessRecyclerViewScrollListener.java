@@ -1,4 +1,4 @@
-package com.fabinpaul.project_1_popularmovies.framework.ui;
+package com.fabinpaul.project_2_popularmovies.framework.ui;
 
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;

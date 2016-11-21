@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.fabinpaul.project_1_popularmovies.features.moviesdetail.ui.MoviesDetailActivity">
+    tools:context="com.fabinpaul.project_2_popularmovies.features.moviesdetail.ui.MoviesDetailActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -28,7 +28,7 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:titleEnabled="false">
 
-            <com.fabinpaul.project_1_popularmovies.framework.ui.ProportionalImageView
+            <com.fabinpaul.project_2_popularmovies.framework.ui.ProportionalImageView
                 android:id="@+id/movies_detail_background_imgvw"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -1,4 +1,4 @@
-package com.fabinpaul.project_1_popularmovies.features.movieshome.ui;
+package com.fabinpaul.project_2_popularmovies.features.movieshome.ui;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,10 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.fabinpaul.project_1_popularmovies.R;
-import com.fabinpaul.project_1_popularmovies.features.movieshome.logic.MoviesListPresenter;
-import com.fabinpaul.project_1_popularmovies.framework.network.MoviesServiceApi;
-import com.fabinpaul.project_1_popularmovies.framework.network.MoviesServiceImpl;
+import com.fabinpaul.project_2_popularmovies.R;
+import com.fabinpaul.project_2_popularmovies.features.movieshome.logic.MoviesListPresenter;
+import com.fabinpaul.project_2_popularmovies.framework.network.MoviesServiceApi;
+import com.fabinpaul.project_2_popularmovies.framework.network.MoviesServiceImpl;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;

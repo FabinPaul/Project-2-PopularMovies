@@ -1,4 +1,4 @@
-package com.fabinpaul.project_1_popularmovies.features.movieshome.data;
+package com.fabinpaul.project_2_popularmovies.features.movieshome.data;
 
 import java.util.ArrayList;
 import java.util.List;

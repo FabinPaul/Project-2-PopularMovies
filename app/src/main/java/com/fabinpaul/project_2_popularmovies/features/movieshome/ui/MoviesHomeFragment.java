@@ -1,4 +1,4 @@
-package com.fabinpaul.project_1_popularmovies.features.movieshome.ui;
+package com.fabinpaul.project_2_popularmovies.features.movieshome.ui;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -14,17 +14,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.fabinpaul.project_1_popularmovies.R;
-import com.fabinpaul.project_1_popularmovies.features.moviesdetail.ui.MoviesDetailActivity;
-import com.fabinpaul.project_1_popularmovies.features.movieshome.ItemOffsetDecoration;
-import com.fabinpaul.project_1_popularmovies.features.movieshome.data.Movie;
-import com.fabinpaul.project_1_popularmovies.features.movieshome.data.MovieList;
-import com.fabinpaul.project_1_popularmovies.features.movieshome.logic.MoviesListContract;
-import com.fabinpaul.project_1_popularmovies.features.movieshome.logic.MoviesListPresenter;
-import com.fabinpaul.project_1_popularmovies.framework.network.MoviesServiceImpl;
-import com.fabinpaul.project_1_popularmovies.framework.repository.MoviesRepository;
-import com.fabinpaul.project_1_popularmovies.framework.repository.MoviesRepositoryImpl;
-import com.fabinpaul.project_1_popularmovies.framework.ui.EndlessRecyclerViewScrollListener;
+import com.fabinpaul.project_2_popularmovies.R;
+import com.fabinpaul.project_2_popularmovies.features.moviesdetail.ui.MoviesDetailActivity;
+import com.fabinpaul.project_2_popularmovies.features.movieshome.ItemOffsetDecoration;
+import com.fabinpaul.project_2_popularmovies.features.movieshome.data.Movie;
+import com.fabinpaul.project_2_popularmovies.features.movieshome.data.MovieList;
+import com.fabinpaul.project_2_popularmovies.features.movieshome.logic.MoviesListContract;
+import com.fabinpaul.project_2_popularmovies.features.movieshome.logic.MoviesListPresenter;
+import com.fabinpaul.project_2_popularmovies.framework.network.MoviesServiceImpl;
+import com.fabinpaul.project_2_popularmovies.framework.repository.MoviesRepository;
+import com.fabinpaul.project_2_popularmovies.framework.repository.MoviesRepositoryImpl;
+import com.fabinpaul.project_2_popularmovies.framework.ui.EndlessRecyclerViewScrollListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

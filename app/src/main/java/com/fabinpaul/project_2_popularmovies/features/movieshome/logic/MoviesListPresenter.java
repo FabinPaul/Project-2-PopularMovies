@@ -1,10 +1,10 @@
-package com.fabinpaul.project_1_popularmovies.features.movieshome.logic;
+package com.fabinpaul.project_2_popularmovies.features.movieshome.logic;
 
 import android.support.annotation.NonNull;
 
-import com.fabinpaul.project_1_popularmovies.features.movieshome.data.Movie;
-import com.fabinpaul.project_1_popularmovies.features.movieshome.data.MovieList;
-import com.fabinpaul.project_1_popularmovies.framework.repository.MoviesRepository;
+import com.fabinpaul.project_2_popularmovies.features.movieshome.data.Movie;
+import com.fabinpaul.project_2_popularmovies.features.movieshome.data.MovieList;
+import com.fabinpaul.project_2_popularmovies.framework.repository.MoviesRepository;
 
 /**
  * Created by Fabin Paul on 11/5/2016 1:37 PM.

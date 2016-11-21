@@ -1,4 +1,4 @@
-package com.fabinpaul.project_1_popularmovies.framework.network;
+package com.fabinpaul.project_2_popularmovies.framework.network;
 
 import java.util.HashMap;
 

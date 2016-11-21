@@ -1,8 +1,8 @@
-package com.fabinpaul.project_1_popularmovies.features.movieshome.logic;
+package com.fabinpaul.project_2_popularmovies.features.movieshome.logic;
 
 import android.support.annotation.IntDef;
 
-import com.fabinpaul.project_1_popularmovies.features.movieshome.data.Movie;
+import com.fabinpaul.project_2_popularmovies.features.movieshome.data.Movie;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

@@ -1,4 +1,4 @@
-package com.fabinpaul.project_1_popularmovies.features.moviesdetail.ui;
+package com.fabinpaul.project_2_popularmovies.features.moviesdetail.ui;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -8,11 +8,11 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import com.fabinpaul.project_1_popularmovies.R;
-import com.fabinpaul.project_1_popularmovies.features.movieshome.data.Movie;
-import com.fabinpaul.project_1_popularmovies.framework.network.MoviesServiceApi;
-import com.fabinpaul.project_1_popularmovies.framework.network.MoviesServiceImpl;
-import com.fabinpaul.project_1_popularmovies.framework.ui.ProportionalImageView;
+import com.fabinpaul.project_2_popularmovies.R;
+import com.fabinpaul.project_2_popularmovies.features.movieshome.data.Movie;
+import com.fabinpaul.project_2_popularmovies.framework.network.MoviesServiceApi;
+import com.fabinpaul.project_2_popularmovies.framework.network.MoviesServiceImpl;
+import com.fabinpaul.project_2_popularmovies.framework.ui.ProportionalImageView;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -21,7 +21,7 @@ import butterknife.Unbinder;
 
 public class MoviesDetailActivity extends AppCompatActivity {
 
-    private static final String MOVIE_EXTRA = "com.fabinpaul.project_1_popularmovies.MovieExtra";
+    private static final String MOVIE_EXTRA = "com.fabinpaul.project_2_popularmovies.MovieExtra";
     private Unbinder mUnBinder;
 
     @BindView(R.id.movies_detail_background_imgvw)

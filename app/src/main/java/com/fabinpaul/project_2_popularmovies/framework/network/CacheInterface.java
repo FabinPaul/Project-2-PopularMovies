@@ -1,4 +1,4 @@
-package com.fabinpaul.project_1_popularmovies.framework.network;
+package com.fabinpaul.project_2_popularmovies.framework.network;
 
 /**
  * Created by Fabin Paul, Eous Solutions Delivery on 11/7/2016 2:12 PM.

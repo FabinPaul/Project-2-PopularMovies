@@ -1,11 +1,11 @@
-package com.fabinpaul.project_1_popularmovies.framework.network;
+package com.fabinpaul.project_2_popularmovies.framework.network;
 
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.fabinpaul.project_1_popularmovies.features.movieshome.data.MovieList;
+import com.fabinpaul.project_2_popularmovies.features.movieshome.data.MovieList;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;

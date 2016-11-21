@@ -1,4 +1,4 @@
-package com.fabinpaul.project_1_popularmovies.features.movieshome;
+package com.fabinpaul.project_2_popularmovies.features.movieshome;
 
 import android.content.Context;
 import android.graphics.Rect;

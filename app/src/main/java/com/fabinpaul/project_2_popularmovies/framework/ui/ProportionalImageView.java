@@ -1,11 +1,11 @@
-package com.fabinpaul.project_1_popularmovies.framework.ui;
+package com.fabinpaul.project_2_popularmovies.framework.ui;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-import com.fabinpaul.project_1_popularmovies.R;
+import com.fabinpaul.project_2_popularmovies.R;
 
 /**
  * Created by Fabin Paul, Eous Solutions Delivery on 11/7/2016 3:24 PM.

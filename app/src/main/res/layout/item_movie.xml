@@ -9,7 +9,7 @@
     card_view:cardCornerRadius="@dimen/dimen_1"
     card_view:cardUseCompatPadding="true">
 
-    <com.fabinpaul.project_1_popularmovies.framework.ui.ProportionalImageView
+    <com.fabinpaul.project_2_popularmovies.framework.ui.ProportionalImageView
         android:id="@+id/movie_item_poster_image_vw"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
