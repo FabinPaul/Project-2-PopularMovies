@@ -1,0 +1,24 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="com.fabinpaul.project_1_popularmovies.features.movieshome.ui.MoviesHomeActivity">
+    <!--<item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="never"/>-->
+
+    <item android:id="@+id/movie_sort"
+          android:title="@string/sort_movies_menu"
+          android:icon="@drawable/ic_sort_white_24dp"
+          app:showAsAction="always">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item android:id="@+id/movies_popular_sort"
+                      android:title="@string/popular_movies"/>
+                <item android:id="@+id/movies_top_rated_sort"
+                      android:title="@string/top_rated_movies" />
+            </group>
+        </menu>
+    </item>
+</menu>

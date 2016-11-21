@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/tools"
+    android:id="@+id/movie_card_vw"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    card_view:cardCornerRadius="@dimen/dimen_1"
+    card_view:cardUseCompatPadding="true">
+
+    <com.fabinpaul.project_1_popularmovies.framework.ui.ProportionalImageView
+        android:id="@+id/movie_item_poster_image_vw"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        app:aspectRatio="1.5"
+        android:adjustViewBounds="true"/>
+</android.support.v7.widget.CardView>

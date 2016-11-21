@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Project-2-PopularMovies</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_movies_detail">Movies Detail</string>
+
+    <string name="api_key"></string>
+    <string name="sort_movie_pref">Sort_Movie_Pref</string>
+    <string name="load_top_rated_movies">Loading Top Rated Movies</string>
+    <string name="load_popular_movies">Loading Popular Movies</string>
+
+
+</resources>

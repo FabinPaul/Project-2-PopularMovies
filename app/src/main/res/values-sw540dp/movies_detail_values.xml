@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--Dimens-->
+    <dimen name="details_poster_width">180dp</dimen>
+    <dimen name="details_poster_margin_right">40dp</dimen>
+    <dimen name="movie_poster_toolbar_overlap">100dp</dimen>
+</resources>

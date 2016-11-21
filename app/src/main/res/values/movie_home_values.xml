@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--Dimens-->
+    <dimen name="movie_grid_item_offset">1dp</dimen>
+
+    <!--Strings-->
+    <string name="title_activity_movies_home">Movies Home</string>
+    <string name="sort_movies_menu">Sort Movies</string>
+    <string name="popular_movies">Popular Movies</string>
+    <string name="top_rated_movies">Top Rated Movies</string>
+    <string name="movie_pref">Movie_Preference</string>
+</resources>
