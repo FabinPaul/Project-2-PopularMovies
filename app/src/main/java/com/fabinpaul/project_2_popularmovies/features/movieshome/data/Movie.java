@@ -16,20 +16,21 @@ import java.util.Locale;
 
 public class Movie implements Parcelable {
 
-    private String poster_path;
-    private Boolean adult;
-    private String overview;
-    private String release_date;
-    private List<Integer> genre_ids;
-    private Integer id;
-    private String original_title;
-    private String original_language;
-    private String title;
-    private String backdrop_path;
-    private Float popularity;
-    private Integer vote_count;
-    private Boolean video;
-    private Float vote_average;
+    protected String poster_path;
+    protected Boolean adult;
+    protected String overview;
+    protected String release_date;
+    protected List<Integer> genre_ids;
+    protected Integer id;
+    protected String original_title;
+    protected String original_language;
+    protected String title;
+    protected String backdrop_path;
+    protected Float popularity;
+    protected Integer vote_count;
+    protected Boolean video;
+    protected Float vote_average;
+    protected Boolean isFavourite;
 
     public Movie() {
         genre_ids = new ArrayList<Integer>();
@@ -116,6 +117,8 @@ public class Movie implements Parcelable {
         byte videoVal = in.readByte();
         video = videoVal == 0x02 ? null : videoVal != 0x00;
         vote_average = in.readByte() == 0x00 ? null : in.readFloat();
+        byte favourite = in.readByte();
+        isFavourite = favourite == 0x02 ? null : favourite != 0x00;
     }
 
     @Override
@@ -171,6 +174,12 @@ public class Movie implements Parcelable {
         } else {
             dest.writeByte((byte) (0x01));
             dest.writeFloat(vote_average);
+        }
+
+        if (isFavourite == null) {
+            dest.writeByte((byte) (0x02));
+        } else {
+            dest.writeByte((byte) (isFavourite ? 0x01 : 0x00));
         }
     }
 
