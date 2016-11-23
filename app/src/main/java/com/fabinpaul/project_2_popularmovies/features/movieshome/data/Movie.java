@@ -16,17 +16,18 @@ import java.util.Locale;
 
 public class Movie implements Parcelable {
 
-    protected String poster_path;
+
     protected Boolean adult;
-    protected String overview;
-    protected String release_date;
     protected List<Integer> genre_ids;
     protected Integer id;
-    protected String original_title;
-    protected String original_language;
     protected String title;
+    protected String original_title;
+    protected String overview;
+    protected String release_date;
+    protected String poster_path;
     protected String backdrop_path;
     protected Float popularity;
+    protected String original_language;
     protected Integer vote_count;
     protected Boolean video;
     protected Float vote_average;

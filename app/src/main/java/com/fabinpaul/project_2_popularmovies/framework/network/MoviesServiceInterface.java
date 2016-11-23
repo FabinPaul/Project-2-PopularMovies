@@ -16,7 +16,5 @@ public interface MoviesServiceInterface {
         void onFailure(String message);
     }
 
-    Subscription getPopularMovies(String apiKey, int page, MoviesServiceCallback<MovieList> pCallback);
-
-    Subscription getTopRatedMovies(String apiKey, int page, MoviesServiceCallback<MovieList> pCallback);
+    Subscription getMoviesList(@MoviesServiceApi.MovieSortTypes String moviesSort, String apiKey, int page, MoviesServiceCallback<MovieList> pCallback);
 }

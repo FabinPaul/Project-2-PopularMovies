@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import com.fabinpaul.project_2_popularmovies.R;
 import com.fabinpaul.project_2_popularmovies.features.movieshome.data.Movie;
 import com.fabinpaul.project_2_popularmovies.features.movieshome.data.MovieList;
+import com.fabinpaul.project_2_popularmovies.framework.network.MoviesServiceApi;
 import com.fabinpaul.project_2_popularmovies.framework.network.MoviesServiceInterface;
 
 import rx.subscriptions.CompositeSubscription;
@@ -68,31 +69,20 @@ public class MoviesRepositoryImpl implements MoviesRepository {
 
     @Override
     public void getPopularMovies(int pageNoToLoad, @NonNull final MoviesRepositoryCallback<MovieList> pCallback) {
-        String apiKey = mContext.getString(R.string.api_key);
         showProgressDialog(mContext.getString(R.string.load_popular_movies));
-        mCompositeSubscription.add(
-                mMoviesServiceInterface.getPopularMovies(apiKey, pageNoToLoad, new MoviesServiceInterface.MoviesServiceCallback<MovieList>() {
-                    @Override
-                    public void onSuccess(MovieList movies) {
-                        mMovieList.updateMovieList(movies);
-                        pCallback.onSuccess(movies);
-                        dismissProgressDialog();
-                    }
-
-                    @Override
-                    public void onFailure(String message) {
-                        pCallback.onFailure(message);
-                        dismissProgressDialog();
-                    }
-                }));
+        getMoviesList(MoviesServiceApi.POPULAR_SORT, pageNoToLoad, pCallback);
     }
 
     @Override
     public void getTopRatedMovies(int pageNoToLoad, @NonNull final MoviesRepositoryCallback<MovieList> pCallback) {
-        String apiKey = mContext.getString(R.string.api_key);
         showProgressDialog(mContext.getString(R.string.load_top_rated_movies));
+        getMoviesList(MoviesServiceApi.TOP_RATED_SORT, pageNoToLoad, pCallback);
+    }
+
+    private void getMoviesList(@MoviesServiceApi.MovieSortTypes String movieSort, int pageNoToLoad, @NonNull final MoviesRepositoryCallback<MovieList> pCallback) {
+        String apiKey = mContext.getString(R.string.api_key);
         mCompositeSubscription.add(
-                mMoviesServiceInterface.getTopRatedMovies(apiKey, pageNoToLoad, new MoviesServiceInterface.MoviesServiceCallback<MovieList>() {
+                mMoviesServiceInterface.getMoviesList(movieSort, apiKey, pageNoToLoad, new MoviesServiceInterface.MoviesServiceCallback<MovieList>() {
                     @Override
                     public void onSuccess(MovieList movies) {
                         mMovieList.updateMovieList(movies);

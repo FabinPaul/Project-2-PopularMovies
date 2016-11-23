@@ -1,7 +1,6 @@
 package com.fabinpaul.project_2_popularmovies.framework.network;
 
 import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -24,9 +23,6 @@ public class MoviesServiceImpl implements MoviesServiceInterface {
 
     private static final String TAG = MoviesServiceImpl.class.getSimpleName();
 
-    private static final String POPULAR_MOVIES_REQUEST_TAG = "Popular_Movies_Request";
-    private static final String TOP_RATED_MOVIES_REQUEST_TAG = "Top_Rated_Movies_Request";
-
     private Retrofit retrofit = new Retrofit.Builder()
             .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
@@ -34,17 +30,17 @@ public class MoviesServiceImpl implements MoviesServiceInterface {
             .build();
 
     @Override
-    public Subscription getPopularMovies(@NonNull String apiKey, final int page, @NonNull final MoviesServiceCallback<MovieList> pCallback) {
+    public Subscription getMoviesList(@MoviesServiceApi.MovieSortTypes final String moviesSort, String apiKey, final int page, final MoviesServiceCallback<MovieList> pCallback) {
         if (checkIfNull(apiKey, pCallback)) {
-            throw new NullPointerException("Popular Movies Service Callback cannot be null");
+            throw new NullPointerException("Service Callback cannot be null for "+moviesSort);
         }
         Observable<MovieList> movieListObservable;
-        if (CacheImpl.INSTANCE.getFromCache(POPULAR_MOVIES_REQUEST_TAG + page) != null) {
-            MovieList movieList = (MovieList) CacheImpl.INSTANCE.getFromCache(POPULAR_MOVIES_REQUEST_TAG + page);
+        if (CacheImpl.INSTANCE.getFromCache(moviesSort + page) != null) {
+            MovieList movieList = (MovieList) CacheImpl.INSTANCE.getFromCache(moviesSort + page);
             movieListObservable = Observable.just(movieList);
         } else {
             movieListObservable = retrofit.create(MoviesServiceApi.class)
-                    .getPopularMovies(apiKey, page);
+                    .getMoviesList(moviesSort,apiKey, page);
         }
         return movieListObservable
                 .observeOn(AndroidSchedulers.mainThread())
@@ -52,43 +48,7 @@ public class MoviesServiceImpl implements MoviesServiceInterface {
                 .subscribe(new Observer<MovieList>() {
                     @Override
                     public void onCompleted() {
-                        Log.d(TAG, "Popular movies fetch complete");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, "Error fetching popular movies");
-                        pCallback.onFailure(e.getMessage());
-                    }
-
-                    @Override
-                    public void onNext(MovieList pMovieList) {
-                        CacheImpl.INSTANCE.addToCache(POPULAR_MOVIES_REQUEST_TAG + page, pMovieList);
-                        pCallback.onSuccess(pMovieList);
-                    }
-                });
-    }
-
-    @Override
-    public Subscription getTopRatedMovies(@NonNull String apiKey, final int page, @NonNull final MoviesServiceCallback<MovieList> pCallback) {
-        if (checkIfNull(apiKey, pCallback)) {
-            throw new NullPointerException("Top Rated Service Callback cannot be null");
-        }
-        Observable<MovieList> movieListObservable;
-        if (CacheImpl.INSTANCE.getFromCache(TOP_RATED_MOVIES_REQUEST_TAG + page) != null) {
-            MovieList movieList = (MovieList) CacheImpl.INSTANCE.getFromCache(TOP_RATED_MOVIES_REQUEST_TAG + page);
-            movieListObservable = Observable.just(movieList);
-        } else {
-            movieListObservable = retrofit.create(MoviesServiceApi.class)
-                    .getTopRatedMovies(apiKey, page);
-        }
-        return movieListObservable
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Observer<MovieList>() {
-                    @Override
-                    public void onCompleted() {
-                        Log.d(TAG, "Top Rated movies fetch complete");
+                        Log.d(TAG, "Movies list fetched");
                     }
 
                     @Override
@@ -99,7 +59,7 @@ public class MoviesServiceImpl implements MoviesServiceInterface {
 
                     @Override
                     public void onNext(MovieList pMovieList) {
-                        CacheImpl.INSTANCE.addToCache(TOP_RATED_MOVIES_REQUEST_TAG + page, pMovieList);
+                        CacheImpl.INSTANCE.addToCache(moviesSort + page, pMovieList);
                         pCallback.onSuccess(pMovieList);
                     }
                 });
