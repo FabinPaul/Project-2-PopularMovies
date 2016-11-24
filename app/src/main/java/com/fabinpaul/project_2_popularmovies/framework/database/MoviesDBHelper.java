@@ -9,6 +9,13 @@ import android.util.Log;
  * Created by Fabin Paul, Eous Solutions Delivery on 11/22/2016 10:16 AM.
  */
 
+
+/**
+  CREATE TABLE fav_movie_tb (_id INTEGER PRIMARY KEY AUTOINCREMENT, movie_id INTEGER NOT NULL, UNIQUE ( movie_id ) ON CONFLICT REPLACE FOREIGN KEY ( movie_id ) REFERENCES movies_tb ( movie_id ))
+
+ CREATE TABLE movies_tb (_id INTEGER PRIMARY KEY AUTOINCREMENT, movie_id INTEGER NOT NULL, movie_title TEXT NOT NULL, movie_overview TEXT NOT NULL, movie_release_date TEXT NOT NULL, movie_poster TEXT NOT NULL,
+ movie_background TEXT NOT NULL, movie_popularity TEXT NOT NULL, movie_language TEXT NOT NULL, movie_vote_count INTEGER NOT NULL, movie_vote_avg REAL NOT NULL, UNIQUE ( movie_id ) ON CONFLICT REPLACE )
+ */
 public class MoviesDBHelper extends SQLiteOpenHelper {
 
     private static final String TAG = MoviesDBHelper.class.getSimpleName();
@@ -28,7 +35,7 @@ public class MoviesDBHelper extends SQLiteOpenHelper {
                     MoviesDBContract.MoviesTB.COLUMN_RELEASE_DATE   + " TEXT NOT NULL, " +
                     MoviesDBContract.MoviesTB.COLUMN_POSTER         + " TEXT NOT NULL, " +
                     MoviesDBContract.MoviesTB.COLUMN_BACKGROUND     + " TEXT NOT NULL, " +
-                    MoviesDBContract.MoviesTB.COLUMN_POPULARITY     + " REAL NOT NULL, " +
+                    MoviesDBContract.MoviesTB.COLUMN_POPULARITY     + " TEXT NOT NULL, " +
                     MoviesDBContract.MoviesTB.COLUMN_LANGUAGE       + " TEXT NOT NULL, " +
                     MoviesDBContract.MoviesTB.COLUMN_VOTE_COUNT     + " INTEGER NOT NULL, " +
                     MoviesDBContract.MoviesTB.COLUMN_VOTE_AVERAGE   + " REAL NOT NULL, " +
