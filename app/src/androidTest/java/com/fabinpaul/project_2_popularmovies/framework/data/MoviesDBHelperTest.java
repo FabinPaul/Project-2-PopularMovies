@@ -1,9 +1,8 @@
-package com.fabinpaul.project_2_popularmovies.framework.database;
+package com.fabinpaul.project_2_popularmovies.framework.data;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.RenamingDelegatingContext;
 
@@ -18,7 +17,6 @@ import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
 
 /**
  * Created by Fabin Paul, Eous Solutions Delivery on 11/23/2016 4:17 PM.
@@ -26,16 +24,14 @@ import static junit.framework.Assert.fail;
 @RunWith(AndroidJUnit4.class)
 public class MoviesDBHelperTest {
 
-    public static final String LOG_TAG = MoviesDBHelperTest.class.getSimpleName();
     private static final String FILE_TEST_PREFIX = "test_";
     private MoviesDBHelper mMoviesDBHelper;
-    private RenamingDelegatingContext mDelegatingContext;
 
     @Before
     public void setUp() throws Exception {
-        mDelegatingContext = new RenamingDelegatingContext(getTargetContext(), FILE_TEST_PREFIX);
-        //mDelegatingContext.deleteDatabase(FILE_TEST_PREFIX + MoviesDBHelper.DATABASE_NAME);
-        mMoviesDBHelper = new MoviesDBHelper(mDelegatingContext);
+        RenamingDelegatingContext delegatingContext = new RenamingDelegatingContext(getTargetContext(), FILE_TEST_PREFIX);
+        delegatingContext.deleteDatabase(FILE_TEST_PREFIX + MoviesDBHelper.DATABASE_NAME);
+        mMoviesDBHelper = new MoviesDBHelper(delegatingContext);
     }
 
     @Test
@@ -103,18 +99,14 @@ public class MoviesDBHelperTest {
 
     @Test
     public void testInvalidFavRecord() {
-        int movieId = 1234;
+        int invalidMovieId = 1234;
 
         SQLiteDatabase db = mMoviesDBHelper.getWritableDatabase();
 
-        ContentValues testValues = DBTestUtils.create_Fav_MovieValue(movieId);
+        ContentValues testValues = DBTestUtils.create_Fav_MovieValue(invalidMovieId);
 
-        try {
-            long favRowId = db.insert(MoviesDBContract.FavouriteMoviesTB.TABLE_NAME, null, testValues);
-            fail("Error: record should not be inserted");
-        } catch (SQLiteException e) {
-            e.printStackTrace();
-        }
+        long favRowId = db.insert(MoviesDBContract.FavouriteMoviesTB.TABLE_NAME, null, testValues);
+        assertTrue("Error: record should not be inserted " + favRowId, favRowId == -1);
     }
 
     @Test

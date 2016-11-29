@@ -1,4 +1,4 @@
-package com.fabinpaul.project_2_popularmovies.framework.database;
+package com.fabinpaul.project_2_popularmovies.framework.data;
 
 import android.content.ContentValues;
 import android.database.Cursor;
