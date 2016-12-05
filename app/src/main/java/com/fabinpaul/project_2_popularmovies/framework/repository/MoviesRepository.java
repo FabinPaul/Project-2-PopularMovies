@@ -1,5 +1,6 @@
 package com.fabinpaul.project_2_popularmovies.framework.repository;
 
+import com.fabinpaul.project_2_popularmovies.features.moviesdetail.data.MovieDetails;
 import com.fabinpaul.project_2_popularmovies.features.movieshome.data.Movie;
 import com.fabinpaul.project_2_popularmovies.features.movieshome.data.MovieList;
 
@@ -17,6 +18,10 @@ public interface MoviesRepository {
 
     void onDestroy();
 
+    void onStop();
+
+    void onStart();
+
     Movie getMovie(int atPosition);
 
     int getTopPages();
@@ -25,7 +30,9 @@ public interface MoviesRepository {
 
     void clearMoviesList();
 
-    void getPopularMovies(int pageNoToLoad, MoviesRepository.MoviesRepositoryCallback<MovieList> pCallback);
+    void getPopularMovies(int pageNoToLoad, MoviesRepository.MoviesRepositoryCallback<MovieList> pCallback, boolean isRefresh);
 
-    void getTopRatedMovies(int pageNoToLoad, MoviesRepository.MoviesRepositoryCallback<MovieList> pCallback);
+    void getTopRatedMovies(int pageNoToLoad, MoviesRepository.MoviesRepositoryCallback<MovieList> pCallback, boolean isRefresh);
+
+    void getMovieDetails(int movieId, MoviesRepository.MoviesRepositoryCallback<MovieDetails> pCallback);
 }

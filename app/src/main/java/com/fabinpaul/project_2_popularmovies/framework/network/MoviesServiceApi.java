@@ -2,6 +2,7 @@ package com.fabinpaul.project_2_popularmovies.framework.network;
 
 import android.support.annotation.StringDef;
 
+import com.fabinpaul.project_2_popularmovies.features.moviesdetail.data.MovieDetails;
 import com.fabinpaul.project_2_popularmovies.features.movieshome.data.MovieList;
 
 import java.lang.annotation.Retention;
@@ -29,6 +30,10 @@ public interface MoviesServiceApi {
 
     @GET("movie/{sort}")
     Observable<MovieList> getMoviesList(@Path("sort") @MovieSortTypes String movieSort, @Query("api_key") String apiKey, @Query("page") int page);
+
+
+    @GET("movie/{movie_id}")
+    Observable<MovieDetails> getMovieDetails(@Path("movie_id") int movieId, @Query("api_key") String apiKey, @Query("append_to_response") String additionalResponses);
 
 
     @Retention(RetentionPolicy.SOURCE)

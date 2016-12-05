@@ -3,7 +3,9 @@ package com.fabinpaul.project_2_popularmovies.features.movieshome.ui;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -40,6 +42,8 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
 
     @BindView(R.id.movies_recycvw_list)
     RecyclerView mMoviesRecycVw;
+    @BindView(R.id.movies_swiperefresh)
+    SwipeRefreshLayout mMoviesSwipeRefresh;
 
     private MoviesListPresenter mMoviesListPresenter;
     private MoviesListAdapter mMoviesListAdapter;
@@ -65,6 +69,9 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
         mMoviesRecycVw.setLayoutManager(gridLayoutManager);
         ItemOffsetDecoration itemDecoration = new ItemOffsetDecoration(getActivity(), R.dimen.movie_grid_item_offset);
         mMoviesRecycVw.addItemDecoration(itemDecoration);
+        mMoviesSwipeRefresh.setColorSchemeResources(
+                R.color.swipe_color_1, R.color.swipe_color_2,
+                R.color.swipe_color_3, R.color.swipe_color_4);
         EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
@@ -74,6 +81,18 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
         mMoviesRecycVw.addOnScrollListener(scrollListener);
         mMoviesListAdapter = MoviesListAdapter.setMoviesListAdapter(mMoviesListPresenter, mMoviesRecycVw);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        mMoviesSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Log.i(TAG, "onRefresh called from SwipeRefreshLayout");
+                mMoviesListPresenter.refreshPage();
+            }
+        });
     }
 
     @Override
@@ -104,7 +123,7 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
                 .getSubMenu()
                 .findItem(R.id.movies_popular_sort)
                 .setChecked(true);
-        getPopularMovies();
+        mMoviesListPresenter.changeMovieSort(MoviesListContract.POPULAR_MOVIE);
     }
 
     @Override
@@ -158,6 +177,12 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
         editor.apply();
     }
 
+    private void onRefreshComplete() {
+        if (mMoviesSwipeRefresh.isRefreshing()) {
+            mMoviesSwipeRefresh.setRefreshing(false);
+        }
+    }
+
     private int getMovieSortPreference() {
         return mSortMoviePreferences.getInt(getString(R.string.sort_movie_pref), R.id.movies_popular_sort);
     }
@@ -168,11 +193,12 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
             @Override
             public void onSuccess(MovieList movies) {
                 mMoviesListAdapter.notifyDataSetChanged();
-
+                onRefreshComplete();
             }
 
             @Override
             public void onFailure(String message) {
+                onRefreshComplete();
             }
         });
     }
@@ -183,10 +209,12 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
             @Override
             public void onSuccess(MovieList movies) {
                 mMoviesListAdapter.notifyDataSetChanged();
+                onRefreshComplete();
             }
 
             @Override
             public void onFailure(String message) {
+                onRefreshComplete();
             }
         });
     }

@@ -16,7 +16,7 @@ public interface MoviesListContract {
     int POPULAR_MOVIE = 1;
     int TOP_RATED_MOVIE = 2;
 
-    interface View{
+    interface View {
         void getPopularMovies();
 
         void getTopRatedMovies();
@@ -24,18 +24,21 @@ public interface MoviesListContract {
         void showMovieDetails(Movie pMovie);
     }
 
-    interface UserActionsListener{
+    interface UserActionsListener {
         void moviesOnClick(int pPosition);
 
         void changeMovieSort(@MovieSortStatus int pSortId);
 
         void loadMoreDataFromApi(int pPageToLoad);
+
+        void refreshPage();
     }
 
 
     @Retention(RetentionPolicy.SOURCE)
     // Enumerate valid values for this interface
-    @IntDef({ POPULAR_MOVIE,TOP_RATED_MOVIE })
-    // Create an interface for validating int types
-    @interface MovieSortStatus { }
+    @IntDef({POPULAR_MOVIE, TOP_RATED_MOVIE})
+            // Create an interface for validating int types
+    @interface MovieSortStatus {
+    }
 }

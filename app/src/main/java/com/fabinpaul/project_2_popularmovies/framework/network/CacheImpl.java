@@ -9,15 +9,26 @@ import java.util.HashMap;
 public enum CacheImpl implements CacheInterface {
     INSTANCE;
 
-    private HashMap<String, Object> mInMemoryCache = new HashMap<>();
+    private HashMap<Object, Object> mInMemoryCache = new HashMap<>();
 
     @Override
-    public void addToCache(String pTag, Object pObject) {
+    public void addToCache(Object pTag, Object pObject) {
         mInMemoryCache.put(pTag, pObject);
     }
 
     @Override
-    public Object getFromCache(String pTag) {
+    public Object getFromCache(Object pTag) {
         return mInMemoryCache.get(pTag);
+    }
+
+    public void removeAllMovieList(@MoviesServiceApi.MovieSortTypes String sortType) {
+        int i = 1;
+        while (mInMemoryCache.size() > 0) {
+            if (mInMemoryCache.containsKey(sortType + i))
+                mInMemoryCache.remove(sortType + i);
+            else
+                break;
+            i++;
+        }
     }
 }

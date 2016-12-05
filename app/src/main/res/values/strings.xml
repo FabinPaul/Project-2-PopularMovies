@@ -7,6 +7,7 @@
     <string name="sort_movie_pref">Sort_Movie_Pref</string>
     <string name="load_top_rated_movies">Loading Top Rated Movies</string>
     <string name="load_popular_movies">Loading Popular Movies</string>
+    <string name="loading_movie">Loading movie</string>
 
 
 </resources>

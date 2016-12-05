@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView
+<android.support.v4.widget.SwipeRefreshLayout
+    android:id="@+id/movies_swiperefresh"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/movies_recycvw_list"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.fabinpaul.project_2_popularmovies.features.movieshome.ui.MoviesHomeFragment"
-    tools:showIn="@layout/activity_movies_home"/>
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/movies_recycvw_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.fabinpaul.project_2_popularmovies.features.movieshome.ui.MoviesHomeFragment"
+        tools:showIn="@layout/activity_movies_home"/>
+</android.support.v4.widget.SwipeRefreshLayout>

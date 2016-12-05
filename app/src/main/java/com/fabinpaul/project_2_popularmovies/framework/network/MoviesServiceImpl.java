@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.fabinpaul.project_2_popularmovies.features.moviesdetail.data.MovieDetails;
 import com.fabinpaul.project_2_popularmovies.features.movieshome.data.MovieList;
 
 import retrofit2.Retrofit;
@@ -22,6 +23,7 @@ import rx.schedulers.Schedulers;
 public class MoviesServiceImpl implements MoviesServiceInterface {
 
     private static final String TAG = MoviesServiceImpl.class.getSimpleName();
+    private static final String ADDITIONAL_RESPONSE = "videos,reviews";
 
     private Retrofit retrofit = new Retrofit.Builder()
             .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
@@ -30,17 +32,19 @@ public class MoviesServiceImpl implements MoviesServiceInterface {
             .build();
 
     @Override
-    public Subscription getMoviesList(@MoviesServiceApi.MovieSortTypes final String moviesSort, String apiKey, final int page, final MoviesServiceCallback<MovieList> pCallback) {
+    public Subscription getMoviesList(@MoviesServiceApi.MovieSortTypes final String moviesSort,
+                                      String apiKey, final int page,
+                                      final MoviesServiceCallback<MovieList> pCallback) {
         if (checkIfNull(apiKey, pCallback)) {
-            throw new NullPointerException("Service Callback cannot be null for "+moviesSort);
+            throw new NullPointerException("Service Callback cannot be null for " + moviesSort);
         }
         Observable<MovieList> movieListObservable;
-        if (CacheImpl.INSTANCE.getFromCache(moviesSort + page) != null) {
+        if ((CacheImpl.INSTANCE.getFromCache(moviesSort + page) != null)) {
             MovieList movieList = (MovieList) CacheImpl.INSTANCE.getFromCache(moviesSort + page);
             movieListObservable = Observable.just(movieList);
         } else {
             movieListObservable = retrofit.create(MoviesServiceApi.class)
-                    .getMoviesList(moviesSort,apiKey, page);
+                    .getMoviesList(moviesSort, apiKey, page);
         }
         return movieListObservable
                 .observeOn(AndroidSchedulers.mainThread())
@@ -65,8 +69,48 @@ public class MoviesServiceImpl implements MoviesServiceInterface {
                 });
     }
 
+    @Override
+    public Subscription getMovieDetails(final int pMovieId, String apiKey, final MoviesServiceCallback<MovieDetails> pCallback) {
+        if (checkIfNull(pMovieId, apiKey, pCallback)) {
+            throw new NullPointerException("Service Callback cannot be null for movieId " + pMovieId);
+        }
+        Observable<MovieDetails> movieDetailsObservable;
+        if ((CacheImpl.INSTANCE.getFromCache(pMovieId) != null)) {
+            MovieDetails movieDetails = (MovieDetails) CacheImpl.INSTANCE.getFromCache(pMovieId);
+            movieDetailsObservable = Observable.just(movieDetails);
+        } else {
+            movieDetailsObservable = retrofit.create(MoviesServiceApi.class)
+                    .getMovieDetails(pMovieId, apiKey, ADDITIONAL_RESPONSE);
+        }
+        return movieDetailsObservable
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<MovieDetails>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d(TAG, "Movie details fetched");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "Error fetching movie " + pMovieId);
+                        pCallback.onFailure(e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(MovieDetails movieDetails) {
+                        CacheImpl.INSTANCE.addToCache(pMovieId, movieDetails);
+                        pCallback.onSuccess(movieDetails);
+                    }
+                });
+    }
+
     private boolean checkIfNull(String apiKey, MoviesServiceCallback<MovieList> pCallback) {
         return TextUtils.isEmpty(apiKey) && pCallback == null;
+    }
+
+    private boolean checkIfNull(int pMovieId, String apiKey, MoviesServiceCallback<MovieDetails> pCallback) {
+        return pMovieId > 0 && TextUtils.isEmpty(apiKey) && pCallback == null;
     }
 
     public static String getBackDropPath(@MoviesServiceApi.BackdropImgSize String backdropImgSize, String imageName) {

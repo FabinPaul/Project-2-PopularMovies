@@ -6,7 +6,7 @@ package com.fabinpaul.project_2_popularmovies.framework.network;
 
 public interface CacheInterface {
 
-    void addToCache(String pTag, Object pObject);
+    void addToCache(Object pTag, Object pObject);
 
-    Object getFromCache(String pTag);
+    Object getFromCache(Object pTag);
 }

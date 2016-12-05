@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:paddingLeft="@dimen/dimen_8"
+              android:paddingRight="@dimen/dimen_8">
+
+    <TextView
+        android:id="@+id/review_txtvw_user_name"
+        style="@style/WidgetStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/font_18"
+        tools:text="Test"/>
+
+    <TextView
+        android:id="@+id/review_txtvw"
+        style="@style/WidgetStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dimen_4"
+        android:layout_marginLeft="@dimen/dimen_12"
+        android:layout_marginRight="@dimen/dimen_4"
+        android:layout_marginStart="@dimen/dimen_12"
+        tools:text="review review review"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_1"
+        android:background="@android:color/darker_gray"/>
+
+</LinearLayout>

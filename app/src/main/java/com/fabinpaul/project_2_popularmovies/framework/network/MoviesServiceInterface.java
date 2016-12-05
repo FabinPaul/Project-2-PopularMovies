@@ -1,5 +1,6 @@
 package com.fabinpaul.project_2_popularmovies.framework.network;
 
+import com.fabinpaul.project_2_popularmovies.features.moviesdetail.data.MovieDetails;
 import com.fabinpaul.project_2_popularmovies.features.movieshome.data.MovieList;
 
 import rx.Subscription;
@@ -17,4 +18,6 @@ public interface MoviesServiceInterface {
     }
 
     Subscription getMoviesList(@MoviesServiceApi.MovieSortTypes String moviesSort, String apiKey, int page, MoviesServiceCallback<MovieList> pCallback);
+
+    Subscription getMovieDetails(int pMovieId, String apiKey, MoviesServiceCallback<MovieDetails> pCallback);
 }
