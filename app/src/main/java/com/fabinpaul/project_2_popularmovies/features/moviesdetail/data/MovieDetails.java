@@ -25,6 +25,7 @@ public class MovieDetails extends Movie implements Parcelable {
     private String imdb_id;
     private String tagline;
     private Double revenue;
+    private ReviewList reviews;
 
     public Double getBudget() {
         return budget;
@@ -74,10 +75,18 @@ public class MovieDetails extends Movie implements Parcelable {
         return revenue;
     }
 
+    public ReviewList getReviews() {
+        return reviews;
+    }
+
+    public MovieDetails() {
+    }
+
     protected MovieDetails(Parcel in) {
+        super(in);
         budget = in.readByte() == 0x00 ? null : in.readDouble();
         if (in.readByte() == 0x01) {
-            genres = new ArrayList<Genres>();
+            genres = new ArrayList<>();
             in.readList(genres, Genres.class.getClassLoader());
         } else {
             genres = null;
@@ -86,20 +95,20 @@ public class MovieDetails extends Movie implements Parcelable {
         videos = (VideoList) in.readValue(VideoList.class.getClassLoader());
         runtime = in.readByte() == 0x00 ? null : in.readInt();
         if (in.readByte() == 0x01) {
-            spoken_languages = new ArrayList<SpokenLanguages>();
+            spoken_languages = new ArrayList<>();
             in.readList(spoken_languages, SpokenLanguages.class.getClassLoader());
         } else {
             spoken_languages = null;
         }
         homepage = in.readString();
         if (in.readByte() == 0x01) {
-            production_countries = new ArrayList<ProductionCountries>();
+            production_countries = new ArrayList<>();
             in.readList(production_countries, ProductionCountries.class.getClassLoader());
         } else {
             production_countries = null;
         }
         if (in.readByte() == 0x01) {
-            production_companies = new ArrayList<ProductionCompanies>();
+            production_companies = new ArrayList<>();
             in.readList(production_companies, ProductionCompanies.class.getClassLoader());
         } else {
             production_companies = null;
@@ -107,6 +116,7 @@ public class MovieDetails extends Movie implements Parcelable {
         imdb_id = in.readString();
         tagline = in.readString();
         revenue = in.readByte() == 0x00 ? null : in.readDouble();
+        reviews = (ReviewList) in.readValue(ReviewList.class.getClassLoader());
     }
 
     @Override
@@ -116,6 +126,7 @@ public class MovieDetails extends Movie implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
         if (budget == null) {
             dest.writeByte((byte) (0x00));
         } else {
@@ -163,6 +174,7 @@ public class MovieDetails extends Movie implements Parcelable {
             dest.writeByte((byte) (0x01));
             dest.writeDouble(revenue);
         }
+        dest.writeValue(reviews);
     }
 
     @SuppressWarnings("unused")

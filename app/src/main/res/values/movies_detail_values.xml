@@ -4,6 +4,14 @@
     <!--Dimens-->
     <dimen name="details_poster_width">110dp</dimen>
     <dimen name="details_poster_margin_right">15dp</dimen>
-    <dimen name="movie_poster_toolbar_overlap">28dp</dimen>
+    <dimen name="movie_poster_toolbar_overlap">21dp</dimen>
+    <dimen name="video_thumbnail_width">207dp</dimen>
+    <dimen name="video_thumbnail_height">115dp</dimen>
+
+    <!--Strings-->
+    <string name="title_activity_movies_detail">Movies Detail</string>
+    <string name="loading_movie">Loading movie</string>
+    <string name="runtime_units">%1$d minutes</string>
+    <string name="share">Share</string>
 
 </resources>

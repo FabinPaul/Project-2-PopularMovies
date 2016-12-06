@@ -1,5 +1,6 @@
 package com.fabinpaul.project_2_popularmovies.features.movieshome.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -51,9 +52,20 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
     private MoviesRepository mMoviesRepository;
     private Unbinder mUnBinder;
 
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        attachFragment(context);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        attachFragment(activity);
+    }
+
+    private void attachFragment(Context context) {
         mMoviesRepository = new MoviesRepositoryImpl(context, new MoviesServiceImpl());
         mMoviesListPresenter = new MoviesListPresenter(this, mMoviesRepository);
         setHasOptionsMenu(true);
@@ -161,8 +173,10 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
     public void showMovieDetails(Movie pMovie) {
         if (getActivity() != null && pMovie != null)
             MoviesDetailActivity.startActivity(getActivity(), pMovie);
-        else
+        else {
+            mMoviesListAdapter.notifyDataSetChanged();
             Log.d(TAG, "pMovie or getActivity is null, Check the parameters");
+        }
     }
 
     private void setToolbarTitle(String pTitle) {

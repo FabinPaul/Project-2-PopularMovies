@@ -6,11 +6,14 @@ import android.support.annotation.NonNull;
 
 import com.fabinpaul.project_2_popularmovies.R;
 import com.fabinpaul.project_2_popularmovies.features.moviesdetail.data.MovieDetails;
+import com.fabinpaul.project_2_popularmovies.features.moviesdetail.data.Video;
 import com.fabinpaul.project_2_popularmovies.features.movieshome.data.Movie;
 import com.fabinpaul.project_2_popularmovies.features.movieshome.data.MovieList;
 import com.fabinpaul.project_2_popularmovies.framework.network.CacheImpl;
 import com.fabinpaul.project_2_popularmovies.framework.network.MoviesServiceApi;
 import com.fabinpaul.project_2_popularmovies.framework.network.MoviesServiceInterface;
+
+import java.util.ArrayList;
 
 import rx.subscriptions.CompositeSubscription;
 
@@ -25,6 +28,7 @@ public class MoviesRepositoryImpl implements MoviesRepository {
     private final MoviesServiceInterface mMoviesServiceInterface;
     private CompositeSubscription mCompositeSubscription;
     private MovieList mMovieList;
+    private MovieDetails mMovieDetails;
     private String mApiKey;
     private boolean isLoading;
 
@@ -36,6 +40,7 @@ public class MoviesRepositoryImpl implements MoviesRepository {
         mMoviesServiceInterface = pMoviesServiceInterface;
         mCompositeSubscription = new CompositeSubscription();
         mMovieList = new MovieList();
+        mMovieDetails = new MovieDetails();
 
         mApiKey = mContext.getString(R.string.api_key);
         mProgressDialog = new ProgressDialog(pContext);
@@ -65,6 +70,8 @@ public class MoviesRepositoryImpl implements MoviesRepository {
 
     @Override
     public Movie getMovie(int atPosition) {
+        if (mMovieList.getResults().size() == 0)
+            return null;
         return mMovieList.getResults().get(atPosition);
     }
 
@@ -81,6 +88,11 @@ public class MoviesRepositoryImpl implements MoviesRepository {
     @Override
     public void clearMoviesList() {
         mMovieList.clear();
+    }
+
+    @Override
+    public ArrayList<Video> getVideoList() {
+        return mMovieDetails.getVideos().getResults();
     }
 
     @Override
@@ -108,6 +120,7 @@ public class MoviesRepositoryImpl implements MoviesRepository {
         mCompositeSubscription.add(mMoviesServiceInterface.getMovieDetails(movieId, mApiKey, new MoviesServiceInterface.MoviesServiceCallback<MovieDetails>() {
             @Override
             public void onSuccess(MovieDetails movies) {
+                mMovieDetails = movies;
                 pCallback.onSuccess(movies);
                 isLoading = false;
                 dismissProgressDialog();

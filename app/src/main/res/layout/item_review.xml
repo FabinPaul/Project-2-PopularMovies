@@ -9,22 +9,23 @@
 
     <TextView
         android:id="@+id/review_txtvw_user_name"
-        style="@style/WidgetStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_4"
+        android:padding="@dimen/dimen_4"
         android:textColor="@android:color/black"
-        android:textSize="@dimen/font_18"
-        tools:text="Test"/>
+        android:textSize="@dimen/font_16"
+        tools:text="Author"/>
 
     <TextView
         android:id="@+id/review_txtvw"
-        style="@style/WidgetStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dimen_4"
-        android:layout_marginLeft="@dimen/dimen_12"
-        android:layout_marginRight="@dimen/dimen_4"
-        android:layout_marginStart="@dimen/dimen_12"
+        android:layout_marginBottom="@dimen/dimen_4"
+        android:ellipsize="end"
+        android:maxLines="3"
+        android:padding="@dimen/dimen_4"
+        android:textColor="@android:color/darker_gray"
         tools:text="review review review"/>
 
     <View

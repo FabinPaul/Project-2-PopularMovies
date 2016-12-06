@@ -14,6 +14,10 @@ public class VideoList implements Parcelable {
     private ArrayList<Video> results;
 
 
+    public ArrayList<Video> getResults() {
+        return results;
+    }
+
     protected VideoList(Parcel in) {
         if (in.readByte() == 0x01) {
             results = new ArrayList<Video>();

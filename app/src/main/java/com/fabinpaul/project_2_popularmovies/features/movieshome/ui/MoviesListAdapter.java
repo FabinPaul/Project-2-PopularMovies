@@ -49,14 +49,16 @@ public class MoviesListAdapter extends RecyclerView.Adapter<MoviesListAdapter.Vi
         Picasso.with(mContext)
                 //.load(MoviesServiceApi.IMAGE_BASE_URL + mMoviesListPresenter.getMovie(position).getPoster_path())
                 .load(MoviesServiceImpl.getPosterPath(MoviesServiceApi.W300, mMoviesListPresenter
-                                                                            .getMovie(position)
-                                                                            .getPoster_path()))
+                        .getMovie(position)
+                        .getPoster_path()))
                 .into(holder.mMoviePosterImgVw);
     }
 
     public void onDestroyView() {
         if (mUnBinder != null)
             mUnBinder.unbind();
+        if (mContext != null)
+            mContext = null;
     }
 
     @Override

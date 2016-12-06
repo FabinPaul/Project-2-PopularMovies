@@ -1,8 +1,11 @@
 package com.fabinpaul.project_2_popularmovies.framework.repository;
 
 import com.fabinpaul.project_2_popularmovies.features.moviesdetail.data.MovieDetails;
+import com.fabinpaul.project_2_popularmovies.features.moviesdetail.data.Video;
 import com.fabinpaul.project_2_popularmovies.features.movieshome.data.Movie;
 import com.fabinpaul.project_2_popularmovies.features.movieshome.data.MovieList;
+
+import java.util.ArrayList;
 
 /**
  * Created by Fabin Paul on 11/6/2016 3:35 PM.
@@ -29,6 +32,8 @@ public interface MoviesRepository {
     int getTotalMoviesCount();
 
     void clearMoviesList();
+
+    ArrayList<Video> getVideoList();
 
     void getPopularMovies(int pageNoToLoad, MoviesRepository.MoviesRepositoryCallback<MovieList> pCallback, boolean isRefresh);
 

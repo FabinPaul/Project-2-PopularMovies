@@ -8,6 +8,8 @@ import android.os.Parcelable;
  */
 public class Video implements Parcelable {
 
+    public static final String YOUTUBE = "YouTube";
+
     private String site;
     private String id;
     private String iso_639_1;
@@ -16,6 +18,42 @@ public class Video implements Parcelable {
     private String key;
     private String iso_3166_1;
     private String size;
+
+    public String getSite() {
+        return site;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getIso_639_1() {
+        return iso_639_1;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public String getIso_3166_1() {
+        return iso_3166_1;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public boolean isYoutubeVideo() {
+        return site.equalsIgnoreCase(YOUTUBE);
+    }
 
     protected Video(Parcel in) {
         site = in.readString();
