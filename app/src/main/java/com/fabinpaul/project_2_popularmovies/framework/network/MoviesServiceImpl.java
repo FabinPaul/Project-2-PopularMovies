@@ -1,6 +1,7 @@
 package com.fabinpaul.project_2_popularmovies.framework.network;
 
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -57,7 +58,7 @@ public class MoviesServiceImpl implements MoviesServiceInterface {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG, "Error fetching Top Rated movies");
+                        Log.e(TAG, "Error fetching " + moviesSort + " movies " + e.getMessage());
                         pCallback.onFailure(e.getMessage());
                     }
 
@@ -70,7 +71,7 @@ public class MoviesServiceImpl implements MoviesServiceInterface {
     }
 
     @Override
-    public Subscription getMovieDetails(final int pMovieId, String apiKey, final MoviesServiceCallback<MovieDetails> pCallback) {
+    public Subscription getMovieDetails(final int pMovieId, String apiKey, @NonNull final MoviesServiceCallback<MovieDetails> pCallback) {
         if (checkIfNull(pMovieId, apiKey, pCallback)) {
             throw new NullPointerException("Service Callback cannot be null for movieId " + pMovieId);
         }

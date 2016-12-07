@@ -3,7 +3,6 @@ package com.fabinpaul.project_2_popularmovies.features.movieshome.logic;
 import android.support.annotation.NonNull;
 
 import com.fabinpaul.project_2_popularmovies.features.movieshome.data.Movie;
-import com.fabinpaul.project_2_popularmovies.features.movieshome.data.MovieList;
 import com.fabinpaul.project_2_popularmovies.framework.repository.MoviesRepository;
 
 /**
@@ -15,7 +14,7 @@ public class MoviesListPresenter implements MoviesListContract.UserActionsListen
     private final MoviesListContract.View mView;
     private final MoviesRepository mMoviesRepository;
     private int mCurrentMovieSortId = 0;
-    private MoviesRepository.MoviesRepositoryCallback<MovieList> mCurrentCallback;
+    private MoviesRepository.MoviesRepositoryCallback mCurrentCallback;
 
     public MoviesListPresenter(MoviesListContract.View pView, MoviesRepository pMoviesRepository) {
         mView = pView;
@@ -30,12 +29,12 @@ public class MoviesListPresenter implements MoviesListContract.UserActionsListen
         return mMoviesRepository.getMovie(atPosition);
     }
 
-    public void getPopularMovies(int pPageToLoad, @NonNull MoviesRepository.MoviesRepositoryCallback<MovieList> pCallback) {
+    public void getPopularMovies(int pPageToLoad, @NonNull MoviesRepository.MoviesRepositoryCallback pCallback) {
         mCurrentCallback = pCallback;
         mMoviesRepository.getPopularMovies(pPageToLoad, pCallback, false);
     }
 
-    public void getTopRatedMovies(int pPageToLoad, @NonNull MoviesRepository.MoviesRepositoryCallback<MovieList> pCallback) {
+    public void getTopRatedMovies(int pPageToLoad, @NonNull MoviesRepository.MoviesRepositoryCallback pCallback) {
         mCurrentCallback = pCallback;
         mMoviesRepository.getTopRatedMovies(pPageToLoad, pCallback, false);
     }
@@ -76,7 +75,7 @@ public class MoviesListPresenter implements MoviesListContract.UserActionsListen
         if (mCurrentMovieSortId == MoviesListContract.POPULAR_MOVIE) {
             mMoviesRepository.getPopularMovies(1, mCurrentCallback, true);
         } else {
-            mMoviesRepository.getPopularMovies(1, mCurrentCallback, true);
+            mMoviesRepository.getTopRatedMovies(1, mCurrentCallback, true);
         }
     }
 }

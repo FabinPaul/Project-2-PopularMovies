@@ -12,6 +12,7 @@ import com.fabinpaul.project_2_popularmovies.R;
 import com.fabinpaul.project_2_popularmovies.features.movieshome.data.Movie;
 import com.fabinpaul.project_2_popularmovies.framework.network.MoviesServiceApi;
 import com.fabinpaul.project_2_popularmovies.framework.network.MoviesServiceImpl;
+import com.fabinpaul.project_2_popularmovies.framework.repository.MoviesRepository;
 import com.fabinpaul.project_2_popularmovies.framework.ui.ProportionalImageView;
 import com.squareup.picasso.Picasso;
 
@@ -21,7 +22,6 @@ import butterknife.Unbinder;
 
 public class MoviesDetailActivity extends AppCompatActivity {
 
-    private static final String MOVIE_EXTRA = "com.fabinpaul.project_2_popularmovies.MovieExtra";
     private Unbinder mUnBinder;
 
     @BindView(R.id.movies_detail_background_imgvw)
@@ -41,8 +41,8 @@ public class MoviesDetailActivity extends AppCompatActivity {
 
         Fragment fragment = getFragmentManager().findFragmentById(R.id.movie_detail_fragment_container);
         Movie movieDetails = null;
-        if (getIntent() != null && getIntent().getParcelableExtra(MOVIE_EXTRA) != null) {
-            movieDetails = getIntent().getParcelableExtra(MOVIE_EXTRA);
+        if (getIntent() != null && getIntent().getParcelableExtra(MoviesRepository.MOVIE_EXTRA) != null) {
+            movieDetails = getIntent().getParcelableExtra(MoviesRepository.MOVIE_EXTRA);
         }
 
         if (movieDetails != null) {
@@ -63,7 +63,7 @@ public class MoviesDetailActivity extends AppCompatActivity {
 
     public static void startActivity(Activity pActivity, Movie pMovie) {
         Intent intent = new Intent(pActivity, MoviesDetailActivity.class);
-        intent.putExtra(MOVIE_EXTRA, pMovie);
+        intent.putExtra(MoviesRepository.MOVIE_EXTRA, pMovie);
         pActivity.startActivity(intent);
     }
 

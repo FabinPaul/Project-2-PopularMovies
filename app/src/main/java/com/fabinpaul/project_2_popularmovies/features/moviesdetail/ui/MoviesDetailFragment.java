@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
@@ -22,7 +23,6 @@ import android.widget.TextView;
 
 import com.fabinpaul.project_2_popularmovies.R;
 import com.fabinpaul.project_2_popularmovies.features.moviesdetail.data.Genres;
-import com.fabinpaul.project_2_popularmovies.features.moviesdetail.data.MovieDetails;
 import com.fabinpaul.project_2_popularmovies.features.moviesdetail.data.Review;
 import com.fabinpaul.project_2_popularmovies.features.moviesdetail.data.Video;
 import com.fabinpaul.project_2_popularmovies.features.moviesdetail.logic.MovieDetailsContract;
@@ -42,12 +42,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-/**
- * A placeholder fragment containing a simple view.
- */
 public class MoviesDetailFragment extends Fragment implements MovieDetailsContract.View {
 
-    private static final String MOVIE_EXTRA = "com.fabinpaul.project_2_popularmovies.MovieExtra";
     private static final String TAG = MoviesDetailFragment.class.getSimpleName();
 
     private Unbinder mUnBinder;
@@ -78,6 +74,7 @@ public class MoviesDetailFragment extends Fragment implements MovieDetailsContra
 
     private MovieVideosListAdapter mVideosListAdapter;
     private MovieDetailsPresenter mDetailsPresenter;
+    private MoviesRepository mMoviesRepository;
 
     public MoviesDetailFragment() {
     }
@@ -85,7 +82,7 @@ public class MoviesDetailFragment extends Fragment implements MovieDetailsContra
     public static MoviesDetailFragment newInstance(Movie pMovie) {
         MoviesDetailFragment fragment = new MoviesDetailFragment();
         Bundle movieExtra = new Bundle();
-        movieExtra.putParcelable(MOVIE_EXTRA, pMovie);
+        movieExtra.putParcelable(MoviesRepository.MOVIE_EXTRA, pMovie);
         fragment.setArguments(movieExtra);
         return fragment;
     }
@@ -103,24 +100,28 @@ public class MoviesDetailFragment extends Fragment implements MovieDetailsContra
         attachFragment(context);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        attachFragment(activity);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            attachFragment(activity);
+        }
     }
 
     private void attachFragment(Context context) {
         Movie movie = null;
-        mDetailsPresenter = new MovieDetailsPresenter(this, new MoviesRepositoryImpl(context, new MoviesServiceImpl()));
-        if (getArguments() != null && getArguments().getParcelable(MOVIE_EXTRA) != null) {
-            movie = getArguments().getParcelable(MOVIE_EXTRA);
+        mMoviesRepository = new MoviesRepositoryImpl(context,new MoviesServiceImpl());
+        mDetailsPresenter = new MovieDetailsPresenter(this, mMoviesRepository);
+        if (getArguments() != null && getArguments().getParcelable(MoviesRepository.MOVIE_EXTRA) != null) {
+            movie = getArguments().getParcelable(MoviesRepository.MOVIE_EXTRA);
         }
         if (movie != null) {
             mMovieTitle = movie.getTitle();
-            mDetailsPresenter.getMoviesDetails(movie.getId(), new MoviesRepository.MoviesRepositoryCallback<MovieDetails>() {
+            mDetailsPresenter.getMoviesDetails(movie.getId(), new MoviesRepository.MoviesRepositoryCallback() {
                 @Override
-                public void onSuccess(MovieDetails movies) {
-                    populateViews(movies);
+                public void onSuccess() {
+                    populateViews();
                 }
 
                 @Override
@@ -136,7 +137,6 @@ public class MoviesDetailFragment extends Fragment implements MovieDetailsContra
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_movies_detail, container, false);
         mUnBinder = ButterKnife.bind(this, view);
-
         return view;
     }
 
@@ -146,31 +146,55 @@ public class MoviesDetailFragment extends Fragment implements MovieDetailsContra
         MenuItem menuItem = menu.findItem(R.id.menu_item_share);
 
         mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
-        //mShareActionProvider = (ShareActionProvider) menuItem.getActionProvider();
     }
 
-    private void populateViews(MovieDetails movies) {
-        if (movies != null) {
+    @Override
+    public void onStart() {
+        super.onStart();
+        mMoviesRepository.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mMoviesRepository.onStop();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        mMoviesRepository.onSaveStateInstance(outState);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mMoviesRepository.onRestoreInstanceState(savedInstanceState);
+    }
+
+
+    private void populateViews() {
+        if (mDetailsPresenter.getMovieDetails() != null) {
             Picasso.with(getActivity())
-                    .load(MoviesServiceImpl.getPosterPath(MoviesServiceApi.W154, movies.getPoster_path()))
+                    .load(MoviesServiceImpl.getPosterPath(MoviesServiceApi.W154, mDetailsPresenter.getMovieDetails().getPoster_path()))
                     .into(mMoviePosterImgVw);
-            mMovieTitleTxtVw.setText(movies.getOriginalTitle());
+            mMovieTitleTxtVw.setText(mDetailsPresenter.getMovieDetails().getOriginalTitle());
             try {
-                mReleaseDateTxtVw.setText(movies.getReleaseDate());
+                mReleaseDateTxtVw.setText(mDetailsPresenter.getMovieDetails().getReleaseDate());
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            mMovieOverviewTxtVw.setText(movies.getOverview());
-            mMovieRatingTxtVw.setText(String.valueOf(movies.getVoteAverage()));
-            mMovieRatingBar.setRating(movies.getVoteAverage());
-            for (Genres genres : movies.getGenres()) {
+            mMovieOverviewTxtVw.setText(mDetailsPresenter.getMovieDetails().getOverview());
+            mMovieRatingTxtVw.setText(String.valueOf(mDetailsPresenter.getMovieDetails().getVoteAverage()));
+            mMovieRatingBar.setRating(mDetailsPresenter.getMovieDetails().getVoteAverage());
+            for (Genres genres : mDetailsPresenter.getMovieDetails().getGenres()) {
                 TextView genreItemView = (TextView) LayoutInflater.from(mGenreContainer.getContext()).inflate(R.layout.item_genre, mGenreContainer, false);
                 genreItemView.setText(genres.getName());
                 mGenreContainer.addView(genreItemView);
             }
             mVideosListAdapter = MovieVideosListAdapter.setMoviesVideoListAdapter(mVideoListRecyclerVw, mDetailsPresenter);
-            mRuntimeTxtVw.setText(getString(R.string.runtime_units, movies.getRuntime()));
-            for (Review review : movies.getReviews().getResults()) {
+            mRuntimeTxtVw.setText(getString(R.string.runtime_units, mDetailsPresenter.getMovieDetails().getRuntime()));
+            for (Review review : mDetailsPresenter.getMovieDetails().getReviews().getResults()) {
                 View view = LayoutInflater.from(mReviewContainer.getContext()).inflate(R.layout.item_review, mReviewContainer, false);
                 TextView reviewerNameTxtVw = (TextView) view.findViewById(R.id.review_txtvw_user_name);
                 TextView reviewTxtVw = (TextView) view.findViewById(R.id.review_txtvw);
@@ -183,10 +207,16 @@ public class MoviesDetailFragment extends Fragment implements MovieDetailsContra
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
         mUnBinder.unbind();
         mVideosListAdapter.onDestroyView();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mMoviesRepository.onDestroy();
     }
 
     @Override

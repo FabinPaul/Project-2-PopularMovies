@@ -3,6 +3,7 @@ package com.fabinpaul.project_2_popularmovies.features.movieshome.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,7 +22,6 @@ import com.fabinpaul.project_2_popularmovies.R;
 import com.fabinpaul.project_2_popularmovies.features.moviesdetail.ui.MoviesDetailActivity;
 import com.fabinpaul.project_2_popularmovies.features.movieshome.ItemOffsetDecoration;
 import com.fabinpaul.project_2_popularmovies.features.movieshome.data.Movie;
-import com.fabinpaul.project_2_popularmovies.features.movieshome.data.MovieList;
 import com.fabinpaul.project_2_popularmovies.features.movieshome.logic.MoviesListContract;
 import com.fabinpaul.project_2_popularmovies.features.movieshome.logic.MoviesListPresenter;
 import com.fabinpaul.project_2_popularmovies.framework.network.MoviesServiceImpl;
@@ -59,14 +59,41 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
         attachFragment(context);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        attachFragment(activity);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            attachFragment(activity);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mMoviesRepository.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mMoviesRepository.onStop();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        mMoviesRepository.onSaveStateInstance(outState);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        mMoviesRepository.onRestoreInstanceState(savedInstanceState);
     }
 
     private void attachFragment(Context context) {
-        mMoviesRepository = new MoviesRepositoryImpl(context, new MoviesServiceImpl());
+        mMoviesRepository = new MoviesRepositoryImpl(context,new MoviesServiceImpl());
         mMoviesListPresenter = new MoviesListPresenter(this, mMoviesRepository);
         setHasOptionsMenu(true);
         mSortMoviePreferences = context.getSharedPreferences(getString(R.string.movie_pref), Context.MODE_PRIVATE);
@@ -157,8 +184,8 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDetach() {
+        super.onDetach();
         mMoviesRepository.onDestroy();
     }
 
@@ -203,9 +230,9 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
 
     public void getPopularMovies() {
         setToolbarTitle(getString(R.string.popular_movies));
-        mMoviesListPresenter.getPopularMovies(1, new MoviesRepository.MoviesRepositoryCallback<MovieList>() {
+        mMoviesListPresenter.getPopularMovies(1, new MoviesRepository.MoviesRepositoryCallback() {
             @Override
-            public void onSuccess(MovieList movies) {
+            public void onSuccess() {
                 mMoviesListAdapter.notifyDataSetChanged();
                 onRefreshComplete();
             }
@@ -219,9 +246,9 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
 
     public void getTopRatedMovies() {
         setToolbarTitle(getString(R.string.top_rated_movies));
-        mMoviesListPresenter.getTopRatedMovies(1, new MoviesRepository.MoviesRepositoryCallback<MovieList>() {
+        mMoviesListPresenter.getTopRatedMovies(1, new MoviesRepository.MoviesRepositoryCallback() {
             @Override
-            public void onSuccess(MovieList movies) {
+            public void onSuccess() {
                 mMoviesListAdapter.notifyDataSetChanged();
                 onRefreshComplete();
             }

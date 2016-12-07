@@ -1,9 +1,11 @@
 package com.fabinpaul.project_2_popularmovies.framework.repository;
 
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+
 import com.fabinpaul.project_2_popularmovies.features.moviesdetail.data.MovieDetails;
 import com.fabinpaul.project_2_popularmovies.features.moviesdetail.data.Video;
 import com.fabinpaul.project_2_popularmovies.features.movieshome.data.Movie;
-import com.fabinpaul.project_2_popularmovies.features.movieshome.data.MovieList;
 
 import java.util.ArrayList;
 
@@ -13,17 +15,26 @@ import java.util.ArrayList;
 
 public interface MoviesRepository {
 
-    interface MoviesRepositoryCallback<T> {
-        void onSuccess(T movies);
+    String MOVIE_EXTRA = "com.fabinpaul.project_2_popularmovies.MovieExtra";
+    String MOVIE_LIST_EXTRA = "com.fabinpaul.project_2_popularmovies.MovieListExtra";
+    String MOVIE_DETAILS_EXTRA = "com.fabinpaul.project_2_popularmovies.MovieDetailsExtra";
+    String REVIEW_LIST_EXTRA = "com.fabinpaul.project_2_popularmovies.ReviewList";
+
+    interface MoviesRepositoryCallback {
+        void onSuccess();
 
         void onFailure(String message);
     }
 
-    void onDestroy();
-
     void onStop();
 
     void onStart();
+
+    void onSaveStateInstance(Bundle savedInstanceState);
+
+    void onRestoreInstanceState(Bundle savedInstanceState);
+
+    void onDestroy();
 
     Movie getMovie(int atPosition);
 
@@ -35,9 +46,11 @@ public interface MoviesRepository {
 
     ArrayList<Video> getVideoList();
 
-    void getPopularMovies(int pageNoToLoad, MoviesRepository.MoviesRepositoryCallback<MovieList> pCallback, boolean isRefresh);
+    void getPopularMovies(int pageNoToLoad, @NonNull MoviesRepository.MoviesRepositoryCallback pCallback, boolean isRefresh);
 
-    void getTopRatedMovies(int pageNoToLoad, MoviesRepository.MoviesRepositoryCallback<MovieList> pCallback, boolean isRefresh);
+    void getTopRatedMovies(int pageNoToLoad, @NonNull MoviesRepository.MoviesRepositoryCallback pCallback, boolean isRefresh);
 
-    void getMovieDetails(int movieId, MoviesRepository.MoviesRepositoryCallback<MovieDetails> pCallback);
+    void getMovieDetails(int movieId, @NonNull MoviesRepository.MoviesRepositoryCallback pCallback);
+
+    MovieDetails getMovieDetails();
 }

@@ -37,7 +37,7 @@ public class MovieDetailsPresenter implements MovieDetailsContract.UserInteracti
         return mMoviesRepository.getVideoList().get(position);
     }
 
-    public void getMoviesDetails(int pMovieId, @NonNull MoviesRepository.MoviesRepositoryCallback<MovieDetails> pCallback) {
+    public void getMoviesDetails(int pMovieId, @NonNull MoviesRepository.MoviesRepositoryCallback pCallback) {
         mMoviesRepository.getMovieDetails(pMovieId, pCallback);
     }
 
@@ -46,5 +46,9 @@ public class MovieDetailsPresenter implements MovieDetailsContract.UserInteracti
         if (video != null && video.isYoutubeVideo()) {
             mView.openYouTubeVideo(MoviesServiceApi.YOUTUBE_URL + video.getKey());
         }
+    }
+
+    public MovieDetails getMovieDetails() {
+        return mMoviesRepository.getMovieDetails();
     }
 }

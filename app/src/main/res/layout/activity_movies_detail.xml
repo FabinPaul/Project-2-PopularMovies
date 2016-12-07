@@ -26,7 +26,7 @@
             app:expandedTitleMarginEnd="64dp"
             app:expandedTitleMarginStart="48dp"
             app:expandedTitleTextAppearance="@style/TextAppearance.Design.CollapsingToolbar.Expanded"
-            app:layout_scrollFlags="scroll|enterAlwaysCollapsed|enterAlways"
+            app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
             app:titleEnabled="false">
 
             <com.fabinpaul.project_2_popularmovies.framework.ui.ProportionalImageView

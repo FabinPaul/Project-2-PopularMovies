@@ -2,6 +2,7 @@ package com.fabinpaul.project_2_popularmovies.framework.repository;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.fabinpaul.project_2_popularmovies.R;
@@ -38,25 +39,29 @@ public class MoviesRepositoryImpl implements MoviesRepository {
     public MoviesRepositoryImpl(Context pContext, MoviesServiceInterface pMoviesServiceInterface) {
         mContext = pContext;
         mMoviesServiceInterface = pMoviesServiceInterface;
-        mCompositeSubscription = new CompositeSubscription();
         mMovieList = new MovieList();
         mMovieDetails = new MovieDetails();
 
-        mApiKey = mContext.getString(R.string.api_key);
+        mCompositeSubscription = new CompositeSubscription();
         mProgressDialog = new ProgressDialog(pContext);
         mProgressDialog.setIndeterminate(true);
+
+        mApiKey = mContext.getString(R.string.api_key);
     }
 
     @Override
     public void onDestroy() {
-        mCompositeSubscription.unsubscribe();
-        mContext = null;
-        mProgressDialog = null;
+        if (mCompositeSubscription != null)
+            mCompositeSubscription.unsubscribe();
+        if (mContext != null)
+            mContext = null;
+        if (mProgressDialog != null)
+            mProgressDialog = null;
     }
 
     @Override
     public void onStop() {
-        if (mProgressDialog.isShowing()) {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
     }
@@ -65,6 +70,22 @@ public class MoviesRepositoryImpl implements MoviesRepository {
     public void onStart() {
         if (isLoading) {
             mProgressDialog.show();
+        }
+    }
+
+    @Override
+    public void onSaveStateInstance(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            savedInstanceState.putParcelable(MOVIE_LIST_EXTRA, mMovieList);
+            savedInstanceState.putParcelable(MOVIE_DETAILS_EXTRA, mMovieDetails);
+        }
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            mMovieList = savedInstanceState.getParcelable(MOVIE_LIST_EXTRA);
+            mMovieDetails = savedInstanceState.getParcelable(MOVIE_DETAILS_EXTRA);
         }
     }
 
@@ -96,7 +117,8 @@ public class MoviesRepositoryImpl implements MoviesRepository {
     }
 
     @Override
-    public void getPopularMovies(int pageNoToLoad, @NonNull final MoviesRepositoryCallback<MovieList> pCallback, boolean isRefresh) {
+    public void getPopularMovies(int pageNoToLoad, @NonNull final MoviesRepositoryCallback pCallback, boolean isRefresh) {
+        checkForNull();
         if (isRefresh) {
             CacheImpl.INSTANCE.removeAllMovieList(MoviesServiceApi.POPULAR_SORT);
         }
@@ -105,7 +127,8 @@ public class MoviesRepositoryImpl implements MoviesRepository {
     }
 
     @Override
-    public void getTopRatedMovies(int pageNoToLoad, @NonNull final MoviesRepositoryCallback<MovieList> pCallback, boolean isRefresh) {
+    public void getTopRatedMovies(int pageNoToLoad, @NonNull final MoviesRepositoryCallback pCallback, boolean isRefresh) {
+        checkForNull();
         if (isRefresh) {
             CacheImpl.INSTANCE.removeAllMovieList(MoviesServiceApi.TOP_RATED_SORT);
         }
@@ -114,14 +137,15 @@ public class MoviesRepositoryImpl implements MoviesRepository {
     }
 
     @Override
-    public void getMovieDetails(int movieId, final MoviesRepositoryCallback<MovieDetails> pCallback) {
+    public void getMovieDetails(int movieId, @NonNull final MoviesRepositoryCallback pCallback) {
+        checkForNull();
         showProgressDialog(mContext.getString(R.string.loading_movie), false);
         isLoading = true;
         mCompositeSubscription.add(mMoviesServiceInterface.getMovieDetails(movieId, mApiKey, new MoviesServiceInterface.MoviesServiceCallback<MovieDetails>() {
             @Override
             public void onSuccess(MovieDetails movies) {
                 mMovieDetails = movies;
-                pCallback.onSuccess(movies);
+                pCallback.onSuccess();
                 isLoading = false;
                 dismissProgressDialog();
             }
@@ -135,14 +159,19 @@ public class MoviesRepositoryImpl implements MoviesRepository {
         }));
     }
 
-    private void getMoviesList(@MoviesServiceApi.MovieSortTypes String movieSort, int pageNoToLoad, @NonNull final MoviesRepositoryCallback<MovieList> pCallback) {
+    @Override
+    public MovieDetails getMovieDetails() {
+        return mMovieDetails;
+    }
+
+    private void getMoviesList(@MoviesServiceApi.MovieSortTypes String movieSort, int pageNoToLoad, @NonNull final MoviesRepositoryCallback pCallback) {
         isLoading = true;
         mCompositeSubscription.add(
                 mMoviesServiceInterface.getMoviesList(movieSort, mApiKey, pageNoToLoad, new MoviesServiceInterface.MoviesServiceCallback<MovieList>() {
                     @Override
                     public void onSuccess(MovieList movies) {
                         mMovieList.updateMovieList(movies);
-                        pCallback.onSuccess(movies);
+                        pCallback.onSuccess();
                         isLoading = false;
                         dismissProgressDialog();
                     }
@@ -161,6 +190,8 @@ public class MoviesRepositoryImpl implements MoviesRepository {
             return;
         if (mMovieList.getPage() > PAGE_FROM_WHICH_LOADING_NOT_SHOWN)
             return;
+        if (mProgressDialog == null)
+            return;
         mProgressDialog.setMessage(pMessage);
         mProgressDialog.show();
     }
@@ -168,6 +199,12 @@ public class MoviesRepositoryImpl implements MoviesRepository {
     private void dismissProgressDialog() {
         if (mMovieList.getPage() > PAGE_FROM_WHICH_DISMISS_NOT_CALLED)
             return;
-        mProgressDialog.dismiss();
+        if (mProgressDialog != null || mProgressDialog.isShowing())
+            mProgressDialog.dismiss();
+    }
+
+    private void checkForNull() {
+        if (mCompositeSubscription == null || mContext == null || mProgressDialog == null)
+            throw new NullPointerException("Invoke init method of repository");
     }
 }
