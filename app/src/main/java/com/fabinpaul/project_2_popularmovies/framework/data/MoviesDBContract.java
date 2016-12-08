@@ -49,6 +49,10 @@ public final class MoviesDBContract {
         public static Uri buildMovieUri(int movieId) {
             return ContentUris.withAppendedId(CONTENT_URI, movieId);
         }
+
+        public static int getMovieIdFromUri(Uri uri) {
+            return Integer.parseInt(uri.getPathSegments().get(0));
+        }
     }
 
     public static final class FavouriteMoviesTB implements BaseColumns {
@@ -65,5 +69,13 @@ public final class MoviesDBContract {
         public static final String TABLE_NAME = "fav_movie_tb";
 
         public static final String COLUMN_MOVIE_ID = "movie_id";
+
+        public static Uri buildFavMovieUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static Uri buildFavMoveListUri() {
+            return Uri.withAppendedPath(CONTENT_URI, PATH_MOVIES);
+        }
     }
 }
