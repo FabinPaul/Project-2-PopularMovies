@@ -28,6 +28,11 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".features.movieshome.ui.MoviesHomeActivity"/>
         </activity>
+
+        <provider
+            android:name=".framework.data.MoviesProvider"
+            android:authorities="com.fabinpaul.project_2_popularmovies"
+            android:exported="false"/>
     </application>
 
 </manifest>

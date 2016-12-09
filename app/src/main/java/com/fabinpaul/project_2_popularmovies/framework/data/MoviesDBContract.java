@@ -51,7 +51,7 @@ public final class MoviesDBContract {
         }
 
         public static int getMovieIdFromUri(Uri uri) {
-            return Integer.parseInt(uri.getPathSegments().get(0));
+            return Integer.parseInt(uri.getPathSegments().get(1));
         }
     }
 

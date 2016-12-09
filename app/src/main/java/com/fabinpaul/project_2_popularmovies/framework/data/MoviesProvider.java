@@ -1,6 +1,5 @@
 package com.fabinpaul.project_2_popularmovies.framework.data;
 
-import android.annotation.TargetApi;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
@@ -9,7 +8,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.os.Build;
 import android.support.annotation.Nullable;
 
 import static com.fabinpaul.project_2_popularmovies.framework.data.MoviesDBContract.CONTENT_AUTHORITY;
@@ -24,10 +22,10 @@ import static com.fabinpaul.project_2_popularmovies.framework.data.MoviesDBContr
 
 public class MoviesProvider extends ContentProvider {
 
-    private static final int FAV_MOVIE_ID_LIST = 100;
-    private static final int FAV_MOVIE_LIST = 101;
-    private static final int MOVIE = 102;
-    private static final int MOVIE_LIST = 103;
+    static final int FAV_MOVIE_ID_LIST = 100;
+    static final int FAV_MOVIE_LIST = 101;
+    static final int MOVIE = 102;
+    static final int MOVIE_LIST = 103;
 
     private MoviesDBHelper mMoviesDBHelper;
 
@@ -43,7 +41,7 @@ public class MoviesProvider extends ContentProvider {
 
     private static final String sMovieSelection = MoviesTB.TABLE_NAME + "." + MoviesTB.COLUMN_MOVIE_ID + " = ?";
 
-    private static UriMatcher buildUriMatcher() {
+    static UriMatcher buildUriMatcher() {
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(CONTENT_AUTHORITY, PATH_MOVIES + "/#", MOVIE);
         uriMatcher.addURI(CONTENT_AUTHORITY, PATH_MOVIES, MOVIE_LIST);
@@ -217,7 +215,6 @@ public class MoviesProvider extends ContentProvider {
     }
 
     @Override
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void shutdown() {
         mMoviesDBHelper.close();
         super.shutdown();

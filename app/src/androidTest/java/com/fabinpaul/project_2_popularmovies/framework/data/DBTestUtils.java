@@ -1,7 +1,13 @@
 package com.fabinpaul.project_2_popularmovies.framework.data;
 
 import android.content.ContentValues;
+import android.database.ContentObserver;
 import android.database.Cursor;
+import android.net.Uri;
+import android.os.Handler;
+import android.os.HandlerThread;
+
+import com.fabinpaul.project_2_popularmovies.framework.utils.PollingCheck;
 
 import java.util.Map;
 import java.util.Set;
@@ -48,5 +54,43 @@ public class DBTestUtils {
         ContentValues contentValues = new ContentValues();
         contentValues.put(MoviesDBContract.FavouriteMoviesTB.COLUMN_MOVIE_ID, movieId);
         return contentValues;
+    }
+
+    static class TestContentObserver extends ContentObserver {
+
+        final HandlerThread mHandlerThread;
+        boolean mContentChanged;
+
+        static TestContentObserver getInstance() {
+            HandlerThread handlerThread = new HandlerThread("ContentObserverThread");
+            handlerThread.start();
+            return new TestContentObserver(handlerThread);
+        }
+
+        private TestContentObserver(HandlerThread handlerThread) {
+            super(new Handler(handlerThread.getLooper()));
+            mHandlerThread = handlerThread;
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            onChange(selfChange, null);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            mContentChanged = true;
+        }
+
+        public void waitForNotificationOrFail() {
+            new PollingCheck(5000) {
+
+                @Override
+                protected boolean check() {
+                    return mContentChanged;
+                }
+            }.run();
+            mHandlerThread.quit();
+        }
     }
 }
