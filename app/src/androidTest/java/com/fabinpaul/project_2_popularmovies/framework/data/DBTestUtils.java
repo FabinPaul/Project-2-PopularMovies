@@ -43,6 +43,24 @@ public class DBTestUtils {
         contentValues.put(MoviesDBContract.MoviesTB.COLUMN_OVERVIEW,    "A biographical drama centered on the rivalry between Formula 1 drivers James Hunt and Niki Lauda during the 1976 Formula One motor-racing season.");
         contentValues.put(MoviesDBContract.MoviesTB.COLUMN_POPULARITY,  "3.234442");
         contentValues.put(MoviesDBContract.MoviesTB.COLUMN_POSTER,      "/cjEepHZOZAwmK6nAj5jis6HV75E.jpg");
+        contentValues.put(MoviesDBContract.MoviesTB.COLUMN_RELEASE_DATE,"2013-08-25");
+        contentValues.put(MoviesDBContract.MoviesTB.COLUMN_VOTE_AVERAGE,7.7);
+        contentValues.put(MoviesDBContract.MoviesTB.COLUMN_VOTE_COUNT,  1414);
+        // @formatter:on
+        return contentValues;
+    }
+
+    public static ContentValues updated_Rush_MovieValues() {
+        ContentValues contentValues = new ContentValues();
+
+        // @formatter:off
+        contentValues.put(MoviesDBContract.MoviesTB.COLUMN_TITLE,       "Rush");
+        contentValues.put(MoviesDBContract.MoviesTB.COLUMN_BACKGROUND,  "/bXRrKLsOgx6Fb1LlmlAezblU7uQ.jpg");
+        contentValues.put(MoviesDBContract.MoviesTB.COLUMN_LANGUAGE,    "en");
+        contentValues.put(MoviesDBContract.MoviesTB.COLUMN_MOVIE_ID,    96721);
+        contentValues.put(MoviesDBContract.MoviesTB.COLUMN_OVERVIEW,    "A biographical drama centered on the rivalry between Formula 1 drivers James Hunt and Niki Lauda during the 1976 Formula One motor-racing season.");
+        contentValues.put(MoviesDBContract.MoviesTB.COLUMN_POPULARITY,  "3.234442");
+        contentValues.put(MoviesDBContract.MoviesTB.COLUMN_POSTER,      "/cjEepHZOZAwmK6nAj5jis6HV75E.jpg");
         contentValues.put(MoviesDBContract.MoviesTB.COLUMN_RELEASE_DATE,"2013-09-02");
         contentValues.put(MoviesDBContract.MoviesTB.COLUMN_VOTE_AVERAGE,7.7);
         contentValues.put(MoviesDBContract.MoviesTB.COLUMN_VOTE_COUNT,  1414);

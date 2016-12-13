@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.RenamingDelegatingContext;
 
 import org.junit.After;
 import org.junit.Before;
@@ -24,14 +23,11 @@ import static junit.framework.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 public class MoviesDBHelperTest {
 
-    private static final String FILE_TEST_PREFIX = "test_";
     private MoviesDBHelper mMoviesDBHelper;
 
     @Before
     public void setUp() throws Exception {
-        RenamingDelegatingContext delegatingContext = new RenamingDelegatingContext(getTargetContext(), FILE_TEST_PREFIX);
-        delegatingContext.deleteDatabase(FILE_TEST_PREFIX + MoviesDBHelper.DATABASE_NAME);
-        mMoviesDBHelper = new MoviesDBHelper(delegatingContext);
+        mMoviesDBHelper = new MoviesDBHelper(getTargetContext());
     }
 
     @Test

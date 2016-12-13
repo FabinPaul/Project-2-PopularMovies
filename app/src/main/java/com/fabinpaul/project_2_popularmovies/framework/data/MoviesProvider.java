@@ -34,9 +34,16 @@ public class MoviesProvider extends ContentProvider {
 
     static {
         sSQLiteQueryBuilder = new SQLiteQueryBuilder();
-        sSQLiteQueryBuilder.setTables(FavouriteMoviesTB.TABLE_NAME + " INNER JOIN " + MoviesTB.TABLE_NAME +
-                " ON " + FavouriteMoviesTB.TABLE_NAME + "." + FavouriteMoviesTB._ID +
-                " = " + MoviesTB.TABLE_NAME + "." + MoviesTB._ID);
+        /*sSQLiteQueryBuilder.setTables(FavouriteMoviesTB.TABLE_NAME + " INNER JOIN " + MoviesTB.TABLE_NAME +
+                " ON " + FavouriteMoviesTB.TABLE_NAME + "." + FavouriteMoviesTB.COLUMN_MOVIE_ID +
+                " = " + MoviesTB.TABLE_NAME + "." + MoviesTB.COLUMN_MOVIE_ID);*/
+        sSQLiteQueryBuilder.setTables(
+                FavouriteMoviesTB.TABLE_NAME + " INNER JOIN " +
+                        MoviesTB.TABLE_NAME +
+                        " ON " + FavouriteMoviesTB.TABLE_NAME +
+                        "." + FavouriteMoviesTB.COLUMN_MOVIE_ID +
+                        " = " + MoviesTB.TABLE_NAME +
+                        "." + MoviesTB.COLUMN_MOVIE_ID);
     }
 
     private static final String sMovieSelection = MoviesTB.TABLE_NAME + "." + MoviesTB.COLUMN_MOVIE_ID + " = ?";
