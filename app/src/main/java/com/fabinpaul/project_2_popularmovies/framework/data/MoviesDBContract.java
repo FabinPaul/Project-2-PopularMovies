@@ -77,5 +77,9 @@ public final class MoviesDBContract {
         public static Uri buildFavMoveListUri() {
             return Uri.withAppendedPath(CONTENT_URI, PATH_MOVIES);
         }
+
+        public static int getFavIdFromUri(Uri uri) {
+            return Integer.parseInt(uri.getPathSegments().get(1));
+        }
     }
 }
