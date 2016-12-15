@@ -26,6 +26,12 @@ public interface MoviesRepository {
         void onFailure(String message);
     }
 
+    interface MoviesLoaderCallback {
+        void onSuccess();
+
+        void onReset();
+    }
+
     void onStop();
 
     void onStart();
@@ -53,4 +59,8 @@ public interface MoviesRepository {
     void getMovieDetails(int movieId, @NonNull MoviesRepository.MoviesRepositoryCallback pCallback);
 
     MovieDetails getMovieDetails();
+
+    void setMovieAsFavourite();
+
+    void getFavouriteMovies(@NonNull MoviesRepository.MoviesLoaderCallback pCallback);
 }

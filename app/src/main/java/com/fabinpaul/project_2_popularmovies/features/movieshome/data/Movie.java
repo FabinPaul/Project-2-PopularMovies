@@ -37,6 +37,50 @@ public class Movie implements Parcelable {
         genre_ids = new ArrayList<Integer>();
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setOriginal_title(String original_title) {
+        this.original_title = original_title;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
+    public void setRelease_date(String release_date) {
+        this.release_date = release_date;
+    }
+
+    public void setPoster_path(String poster_path) {
+        this.poster_path = poster_path;
+    }
+
+    public void setBackdrop_path(String backdrop_path) {
+        this.backdrop_path = backdrop_path;
+    }
+
+    public void setPopularity(Float popularity) {
+        this.popularity = popularity;
+    }
+
+    public void setVote_count(Integer vote_count) {
+        this.vote_count = vote_count;
+    }
+
+    public void setOriginal_language(String original_language) {
+        this.original_language = original_language;
+    }
+
+    public void setVote_average(Float vote_average) {
+        this.vote_average = vote_average;
+    }
+
+    public void setFavourite(Boolean favourite) {
+        isFavourite = favourite;
+    }
+
     public String getPoster_path() {
         return poster_path;
     }
@@ -47,6 +91,10 @@ public class Movie implements Parcelable {
 
     public String getOverview() {
         return overview;
+    }
+
+    public String getReleaseDateString(){
+        return release_date;
     }
 
     public String getReleaseDate() throws ParseException {

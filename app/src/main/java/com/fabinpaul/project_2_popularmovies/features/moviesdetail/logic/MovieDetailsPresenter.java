@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.fabinpaul.project_2_popularmovies.features.moviesdetail.data.MovieDetails;
 import com.fabinpaul.project_2_popularmovies.features.moviesdetail.data.Video;
+import com.fabinpaul.project_2_popularmovies.features.movieshome.data.Movie;
 import com.fabinpaul.project_2_popularmovies.framework.network.MoviesServiceApi;
 import com.fabinpaul.project_2_popularmovies.framework.repository.MoviesRepository;
 
@@ -46,6 +47,11 @@ public class MovieDetailsPresenter implements MovieDetailsContract.UserInteracti
         if (video != null && video.isYoutubeVideo()) {
             mView.openYouTubeVideo(MoviesServiceApi.YOUTUBE_URL + video.getKey());
         }
+    }
+
+    @Override
+    public void setMovieAsFavourite() {
+        mMoviesRepository.setMovieAsFavourite();
     }
 
     public MovieDetails getMovieDetails() {

@@ -1,7 +1,13 @@
 package com.fabinpaul.project_2_popularmovies.framework.repository;
 
+import android.app.Activity;
+import android.app.LoaderManager;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
@@ -10,10 +16,12 @@ import com.fabinpaul.project_2_popularmovies.features.moviesdetail.data.MovieDet
 import com.fabinpaul.project_2_popularmovies.features.moviesdetail.data.Video;
 import com.fabinpaul.project_2_popularmovies.features.movieshome.data.Movie;
 import com.fabinpaul.project_2_popularmovies.features.movieshome.data.MovieList;
+import com.fabinpaul.project_2_popularmovies.framework.data.MoviesDBContract;
 import com.fabinpaul.project_2_popularmovies.framework.network.CacheImpl;
 import com.fabinpaul.project_2_popularmovies.framework.network.MoviesServiceApi;
 import com.fabinpaul.project_2_popularmovies.framework.network.MoviesServiceInterface;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
 import rx.subscriptions.CompositeSubscription;
@@ -22,10 +30,14 @@ import rx.subscriptions.CompositeSubscription;
  * Created by Fabin Paul on 11/6/2016 5:06 PM.
  */
 
-public class MoviesRepositoryImpl implements MoviesRepository {
+public class MoviesRepositoryImpl implements MoviesRepository, LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int PAGE_FROM_WHICH_LOADING_NOT_SHOWN = 0;
     private static final int PAGE_FROM_WHICH_DISMISS_NOT_CALLED = 1;
+
+    public static final int GET_FAV_LIST = 0;
+    private int mCallbackId;
+
     private final MoviesServiceInterface mMoviesServiceInterface;
     private CompositeSubscription mCompositeSubscription;
     private MovieList mMovieList;
@@ -35,8 +47,12 @@ public class MoviesRepositoryImpl implements MoviesRepository {
 
     private ProgressDialog mProgressDialog;
     private Context mContext;
+    private MoviesLoaderCallback mMoviesLoaderCallback;
 
     public MoviesRepositoryImpl(Context pContext, MoviesServiceInterface pMoviesServiceInterface) {
+        if (!(pContext instanceof Activity)) {
+            throw new InvalidParameterException("Pass activity context");
+        }
         mContext = pContext;
         mMoviesServiceInterface = pMoviesServiceInterface;
         mMovieList = new MovieList();
@@ -162,6 +178,101 @@ public class MoviesRepositoryImpl implements MoviesRepository {
     @Override
     public MovieDetails getMovieDetails() {
         return mMovieDetails;
+    }
+
+    @Override
+    public void setMovieAsFavourite() {
+        mContext.getContentResolver().insert(MoviesDBContract.MoviesTB.CONTENT_URI, getMovieTBContentValues(mMovieDetails));
+        mContext.getContentResolver().insert(MoviesDBContract.FavouriteMoviesTB.CONTENT_URI, getFavMovieTBContentValues(mMovieDetails.getId()));
+    }
+
+    @Override
+    public void getFavouriteMovies(@NonNull MoviesLoaderCallback pCallback) {
+        mMoviesLoaderCallback = pCallback;
+        ((Activity) mContext).getLoaderManager().initLoader(GET_FAV_LIST, null, this);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        mCallbackId = id;
+        switch (id) {
+            case GET_FAV_LIST:
+                return new CursorLoader(mContext,
+                        MoviesDBContract.FavouriteMoviesTB.buildFavMoveListUri(),
+                        null, null,
+                        null, null);
+            default:
+                return null;
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        switch (mCallbackId) {
+            case GET_FAV_LIST:
+                ArrayList<Movie> movies = getMovieListFromCursor(data);
+                mMovieList.clear();
+                MovieList movieList = new MovieList();
+                movieList.setPage(1);
+                movieList.setResults(movies);
+                movieList.setTotal_pages(1);
+                movieList.setTotal_results(movies.size());
+                mMovieList.updateMovieList(movieList);
+                if (mMoviesLoaderCallback != null)
+                    mMoviesLoaderCallback.onSuccess();
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        if (mMoviesLoaderCallback != null)
+            mMoviesLoaderCallback.onReset();
+    }
+
+    private ArrayList<Movie> getMovieListFromCursor(Cursor data) {
+        ArrayList<Movie> movieList = new ArrayList<>();
+        if (data != null && data.moveToFirst()) {
+            do {
+                Movie movie = new Movie();
+                movie.setId(data.getInt(data.getColumnIndex(MoviesDBContract.MoviesTB.COLUMN_MOVIE_ID)));
+                movie.setBackdrop_path(data.getString(data.getColumnIndex(MoviesDBContract.MoviesTB.COLUMN_BACKGROUND)));
+                movie.setOriginal_language(data.getString(data.getColumnIndex(MoviesDBContract.MoviesTB.COLUMN_LANGUAGE)));
+                movie.setOriginal_title(data.getString(data.getColumnIndex(MoviesDBContract.MoviesTB.COLUMN_TITLE)));
+                movie.setOverview(data.getString(data.getColumnIndex(MoviesDBContract.MoviesTB.COLUMN_OVERVIEW)));
+                movie.setPopularity(data.getFloat(data.getColumnIndex(MoviesDBContract.MoviesTB.COLUMN_POPULARITY)));
+                movie.setPoster_path(data.getString(data.getColumnIndex(MoviesDBContract.MoviesTB.COLUMN_POSTER)));
+                movie.setRelease_date(data.getString(data.getColumnIndex(MoviesDBContract.MoviesTB.COLUMN_RELEASE_DATE)));
+                movie.setVote_average(data.getFloat(data.getColumnIndex(MoviesDBContract.MoviesTB.COLUMN_VOTE_AVERAGE)));
+                movie.setVote_count(data.getInt(data.getColumnIndex(MoviesDBContract.MoviesTB.COLUMN_VOTE_COUNT)));
+                movie.setFavourite(true);
+                movieList.add(movie);
+            } while (data.moveToNext());
+        }
+        return movieList;
+    }
+
+    private ContentValues getMovieTBContentValues(Movie pMovie) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MoviesDBContract.MoviesTB.COLUMN_MOVIE_ID, pMovie.getId());
+        contentValues.put(MoviesDBContract.MoviesTB.COLUMN_BACKGROUND, pMovie.getBackdropPath());
+        contentValues.put(MoviesDBContract.MoviesTB.COLUMN_LANGUAGE, pMovie.getOriginalLanguage());
+        contentValues.put(MoviesDBContract.MoviesTB.COLUMN_OVERVIEW, pMovie.getOverview());
+        contentValues.put(MoviesDBContract.MoviesTB.COLUMN_POPULARITY, pMovie.getPopularity());
+        contentValues.put(MoviesDBContract.MoviesTB.COLUMN_POSTER, pMovie.getPoster_path());
+        contentValues.put(MoviesDBContract.MoviesTB.COLUMN_RELEASE_DATE, pMovie.getReleaseDateString());
+        contentValues.put(MoviesDBContract.MoviesTB.COLUMN_TITLE, pMovie.getTitle());
+        contentValues.put(MoviesDBContract.MoviesTB.COLUMN_VOTE_AVERAGE, pMovie.getVoteAverage());
+        contentValues.put(MoviesDBContract.MoviesTB.COLUMN_VOTE_COUNT, pMovie.getVoteCount());
+        return contentValues;
+    }
+
+    private ContentValues getFavMovieTBContentValues(int pMovieId) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MoviesDBContract.FavouriteMoviesTB.COLUMN_MOVIE_ID, pMovieId);
+        return contentValues;
     }
 
     private void getMoviesList(@MoviesServiceApi.MovieSortTypes String movieSort, int pageNoToLoad, @NonNull final MoviesRepositoryCallback pCallback) {

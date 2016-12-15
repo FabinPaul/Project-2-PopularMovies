@@ -14,5 +14,7 @@ public interface MovieDetailsContract {
 
     interface UserInteractions {
         void onMovieVideoClick(Video video);
+
+        void setMovieAsFavourite();
     }
 }

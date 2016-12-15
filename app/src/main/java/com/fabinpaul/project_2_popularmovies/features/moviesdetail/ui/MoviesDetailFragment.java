@@ -8,9 +8,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.ShareActionProvider;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -40,6 +42,7 @@ import java.text.ParseException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 public class MoviesDetailFragment extends Fragment implements MovieDetailsContract.View {
@@ -71,6 +74,12 @@ public class MoviesDetailFragment extends Fragment implements MovieDetailsContra
     TextView mRuntimeTxtVw;
     @BindView(R.id.movie_details_review_container)
     ViewGroup mReviewContainer;
+
+    @BindView(R.id.movies_detail_background_imgvw)
+    ProportionalImageView mBackdropImgVw;
+
+    @BindView(R.id.movie_detail_collapsing_toolbar)
+    CollapsingToolbarLayout mMovieCollapsingToolbarLayout;
 
     private MovieVideosListAdapter mVideosListAdapter;
     private MovieDetailsPresenter mDetailsPresenter;
@@ -109,9 +118,16 @@ public class MoviesDetailFragment extends Fragment implements MovieDetailsContra
         }
     }
 
+    @OnClick(R.id.movie_fav_fab)
+    public void onFavouriteMovieToggle(View view) {
+        if (mDetailsPresenter != null) {
+            mDetailsPresenter.setMovieAsFavourite();
+        }
+    }
+
     private void attachFragment(Context context) {
         Movie movie = null;
-        mMoviesRepository = new MoviesRepositoryImpl(context,new MoviesServiceImpl());
+        mMoviesRepository = new MoviesRepositoryImpl(context, new MoviesServiceImpl());
         mDetailsPresenter = new MovieDetailsPresenter(this, mMoviesRepository);
         if (getArguments() != null && getArguments().getParcelable(MoviesRepository.MOVIE_EXTRA) != null) {
             movie = getArguments().getParcelable(MoviesRepository.MOVIE_EXTRA);
@@ -137,6 +153,12 @@ public class MoviesDetailFragment extends Fragment implements MovieDetailsContra
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_movies_detail, container, false);
         mUnBinder = ButterKnife.bind(this, view);
+
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        ((MoviesDetailActivity) getActivity()).setSupportActionBar(toolbar);
+        ((MoviesDetailActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         return view;
     }
 
@@ -178,6 +200,9 @@ public class MoviesDetailFragment extends Fragment implements MovieDetailsContra
             Picasso.with(getActivity())
                     .load(MoviesServiceImpl.getPosterPath(MoviesServiceApi.W154, mDetailsPresenter.getMovieDetails().getPoster_path()))
                     .into(mMoviePosterImgVw);
+            Picasso.with(getActivity())
+                    .load(MoviesServiceImpl.getBackDropPath(MoviesServiceApi.W500, mDetailsPresenter.getMovieDetails().getBackdropPath()))
+                    .into(mBackdropImgVw);
             mMovieTitleTxtVw.setText(mDetailsPresenter.getMovieDetails().getOriginalTitle());
             try {
                 mReleaseDateTxtVw.setText(mDetailsPresenter.getMovieDetails().getReleaseDate());
@@ -233,5 +258,9 @@ public class MoviesDetailFragment extends Fragment implements MovieDetailsContra
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, mMovieTitle);
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, MoviesServiceApi.YOUTUBE_URL + video.getKey());
         mShareActionProvider.setShareIntent(sharingIntent);
+    }
+
+    public void setMovieAsFavourite() {
+
     }
 }

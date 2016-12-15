@@ -33,6 +33,22 @@ public class MovieList implements Parcelable {
         return total_pages;
     }
 
+    public void setPage(int page) {
+        this.page = page;
+    }
+
+    public void setResults(List<Movie> results) {
+        this.results = results;
+    }
+
+    public void setTotal_results(int total_results) {
+        this.total_results = total_results;
+    }
+
+    public void setTotal_pages(int total_pages) {
+        this.total_pages = total_pages;
+    }
+
     public void updateMovieList(MovieList pMovieList) {
         if (pMovieList.getPage() > page) {
             results.addAll(pMovieList.getResults());
