@@ -15,6 +15,7 @@
     <string name="sort_movies_menu">Sort Movies</string>
     <string name="popular_movies">Popular Movies</string>
     <string name="top_rated_movies">Top Rated Movies</string>
+    <string name="fav_movies">Favourite Movies</string>
     <string name="movie_pref">Movie_Preference</string>
     <string name="sort_movie_pref">Sort_Movie_Pref</string>
     <string name="load_top_rated_movies">Loading Top Rated Movies</string>

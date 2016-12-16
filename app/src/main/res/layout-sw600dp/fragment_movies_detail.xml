@@ -5,14 +5,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context="com.fabinpaul.project_2_popularmovies.features.moviesdetail.ui.MoviesDetailActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/movie_detail_appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay"
         app:elevation="0dp">
 
@@ -20,7 +18,6 @@
             android:id="@+id/movie_detail_collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleMarginBottom="18dp"
             app:expandedTitleMarginEnd="64dp"
@@ -36,12 +33,6 @@
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
                 app:aspectRatio="0.6"/>
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:popupTheme="@style/AppTheme.PopupOverlay"/>
         </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>

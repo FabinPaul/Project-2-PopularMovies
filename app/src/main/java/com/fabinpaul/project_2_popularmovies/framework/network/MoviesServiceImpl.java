@@ -59,6 +59,7 @@ public class MoviesServiceImpl implements MoviesServiceInterface {
                     @Override
                     public void onError(Throwable e) {
                         Log.e(TAG, "Error fetching " + moviesSort + " movies " + e.getMessage());
+                        e.printStackTrace();
                         pCallback.onFailure(e.getMessage());
                     }
 
@@ -95,6 +96,7 @@ public class MoviesServiceImpl implements MoviesServiceInterface {
                     @Override
                     public void onError(Throwable e) {
                         Log.e(TAG, "Error fetching movie " + pMovieId);
+                        e.printStackTrace();
                         pCallback.onFailure(e.getMessage());
                     }
 

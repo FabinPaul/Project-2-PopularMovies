@@ -39,6 +39,19 @@ public class MoviesListPresenter implements MoviesListContract.UserActionsListen
         mMoviesRepository.getTopRatedMovies(pPageToLoad, pCallback, false);
     }
 
+    public void getFavouriteMovies(@NonNull MoviesRepository.MoviesLoaderCallback pCallback) {
+        mCurrentCallback = null;
+        mMoviesRepository.getFavouriteMovies(pCallback);
+    }
+
+    public void loadFavouriteMovies() {
+        mMoviesRepository.loadFavouriteMovieId();
+    }
+
+    public boolean isFavouriteMovie(int pMovieId) {
+        return mMoviesRepository.isFavouriteMovie(pMovieId);
+    }
+
     @Override
     public void moviesOnClick(int pPosition) {
         mView.showMovieDetails(mMoviesRepository.getMovie(pPosition));
@@ -50,6 +63,8 @@ public class MoviesListPresenter implements MoviesListContract.UserActionsListen
         mMoviesRepository.clearMoviesList();
         if (mCurrentMovieSortId == MoviesListContract.POPULAR_MOVIE) {
             mView.getPopularMovies();
+        } else if (pSortId == MoviesListContract.FAVOURITE_MOVIE) {
+            mView.getFavouriteMovies();
         } else {
             mView.getTopRatedMovies();
         }
@@ -74,6 +89,8 @@ public class MoviesListPresenter implements MoviesListContract.UserActionsListen
         mMoviesRepository.clearMoviesList();
         if (mCurrentMovieSortId == MoviesListContract.POPULAR_MOVIE) {
             mMoviesRepository.getPopularMovies(1, mCurrentCallback, true);
+        } else if (mCurrentMovieSortId == MoviesListContract.FAVOURITE_MOVIE) {
+            mView.getFavouriteMovies();
         } else {
             mMoviesRepository.getTopRatedMovies(1, mCurrentCallback, true);
         }

@@ -8,8 +8,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
@@ -74,16 +75,15 @@ public class MoviesDetailFragment extends Fragment implements MovieDetailsContra
     TextView mRuntimeTxtVw;
     @BindView(R.id.movie_details_review_container)
     ViewGroup mReviewContainer;
-
     @BindView(R.id.movies_detail_background_imgvw)
     ProportionalImageView mBackdropImgVw;
-
-    @BindView(R.id.movie_detail_collapsing_toolbar)
-    CollapsingToolbarLayout mMovieCollapsingToolbarLayout;
+    @BindView(R.id.movie_fav_fab)
+    FloatingActionButton mFavFAB;
 
     private MovieVideosListAdapter mVideosListAdapter;
     private MovieDetailsPresenter mDetailsPresenter;
     private MoviesRepository mMoviesRepository;
+    private boolean isFavourite;
 
     public MoviesDetailFragment() {
     }
@@ -120,8 +120,12 @@ public class MoviesDetailFragment extends Fragment implements MovieDetailsContra
 
     @OnClick(R.id.movie_fav_fab)
     public void onFavouriteMovieToggle(View view) {
-        if (mDetailsPresenter != null) {
-            mDetailsPresenter.setMovieAsFavourite();
+        if (mDetailsPresenter != null && mDetailsPresenter.getMovieDetails() != null && !mDetailsPresenter.getMovieDetails().isFavourite()) {
+            mDetailsPresenter.setMovieAsFavourite(true);
+            mFavFAB.setImageResource(R.drawable.ic_favorite_24dp);
+        } else if (mDetailsPresenter != null && mDetailsPresenter.getMovieDetails() != null && mDetailsPresenter.getMovieDetails().isFavourite()) {
+            mDetailsPresenter.setMovieAsFavourite(false);
+            mFavFAB.setImageResource(R.drawable.ic_favorite_border_24dp);
         }
     }
 
@@ -134,6 +138,7 @@ public class MoviesDetailFragment extends Fragment implements MovieDetailsContra
         }
         if (movie != null) {
             mMovieTitle = movie.getTitle();
+            isFavourite = movie.isFavourite();
             mDetailsPresenter.getMoviesDetails(movie.getId(), new MoviesRepository.MoviesRepositoryCallback() {
                 @Override
                 public void onSuccess() {
@@ -154,11 +159,12 @@ public class MoviesDetailFragment extends Fragment implements MovieDetailsContra
         View view = inflater.inflate(R.layout.fragment_movies_detail, container, false);
         mUnBinder = ButterKnife.bind(this, view);
 
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-        toolbar.setTitle("");
-        ((MoviesDetailActivity) getActivity()).setSupportActionBar(toolbar);
-        ((MoviesDetailActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        if (view.findViewById(R.id.toolbar) != null) {
+            Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+            toolbar.setTitle("");
+            ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         return view;
     }
 
@@ -197,6 +203,8 @@ public class MoviesDetailFragment extends Fragment implements MovieDetailsContra
 
     private void populateViews() {
         if (mDetailsPresenter.getMovieDetails() != null) {
+            if (isFavourite)
+                mFavFAB.setImageResource(R.drawable.ic_favorite_24dp);
             Picasso.with(getActivity())
                     .load(MoviesServiceImpl.getPosterPath(MoviesServiceApi.W154, mDetailsPresenter.getMovieDetails().getPoster_path()))
                     .into(mMoviePosterImgVw);
@@ -235,7 +243,8 @@ public class MoviesDetailFragment extends Fragment implements MovieDetailsContra
     public void onDestroyView() {
         super.onDestroyView();
         mUnBinder.unbind();
-        mVideosListAdapter.onDestroyView();
+        if (mVideosListAdapter != null)
+            mVideosListAdapter.onDestroyView();
     }
 
     @Override
@@ -258,9 +267,5 @@ public class MoviesDetailFragment extends Fragment implements MovieDetailsContra
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, mMovieTitle);
         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, MoviesServiceApi.YOUTUBE_URL + video.getKey());
         mShareActionProvider.setShareIntent(sharingIntent);
-    }
-
-    public void setMovieAsFavourite() {
-
     }
 }

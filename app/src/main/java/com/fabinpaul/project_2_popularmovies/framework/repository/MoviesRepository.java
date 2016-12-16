@@ -18,7 +18,7 @@ public interface MoviesRepository {
     String MOVIE_EXTRA = "com.fabinpaul.project_2_popularmovies.MovieExtra";
     String MOVIE_LIST_EXTRA = "com.fabinpaul.project_2_popularmovies.MovieListExtra";
     String MOVIE_DETAILS_EXTRA = "com.fabinpaul.project_2_popularmovies.MovieDetailsExtra";
-    String REVIEW_LIST_EXTRA = "com.fabinpaul.project_2_popularmovies.ReviewList";
+    //String REVIEW_LIST_EXTRA = "com.fabinpaul.project_2_popularmovies.ReviewList";
 
     interface MoviesRepositoryCallback {
         void onSuccess();
@@ -60,7 +60,11 @@ public interface MoviesRepository {
 
     MovieDetails getMovieDetails();
 
-    void setMovieAsFavourite();
+    void setMovieAsFavourite(boolean isFav);
 
     void getFavouriteMovies(@NonNull MoviesRepository.MoviesLoaderCallback pCallback);
+
+    void loadFavouriteMovieId();
+
+    boolean isFavouriteMovie(int pMovieId);
 }

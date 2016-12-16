@@ -1,12 +1,13 @@
 package com.fabinpaul.project_2_popularmovies.features.movieshome.ui;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.fabinpaul.project_2_popularmovies.R;
-import com.fabinpaul.project_2_popularmovies.features.moviesdetail.ui.MoviesDetailActivity;
 import com.fabinpaul.project_2_popularmovies.features.movieshome.ItemOffsetDecoration;
 import com.fabinpaul.project_2_popularmovies.features.movieshome.data.Movie;
 import com.fabinpaul.project_2_popularmovies.features.movieshome.logic.MoviesListContract;
@@ -51,6 +51,16 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
     private SharedPreferences mSortMoviePreferences;
     private MoviesRepository mMoviesRepository;
     private Unbinder mUnBinder;
+    private boolean mIsTwoPaneLayout;
+    private boolean isMoviesLoaded;
+
+    public void setAsTwoPaneLayout(boolean isTwoPaneLayout) {
+        mIsTwoPaneLayout = isTwoPaneLayout;
+    }
+
+    interface Callback {
+        void onItemSelected(@NonNull Movie pMovie);
+    }
 
 
     @Override
@@ -93,7 +103,7 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
     }
 
     private void attachFragment(Context context) {
-        mMoviesRepository = new MoviesRepositoryImpl(context,new MoviesServiceImpl());
+        mMoviesRepository = new MoviesRepositoryImpl(context, new MoviesServiceImpl());
         mMoviesListPresenter = new MoviesListPresenter(this, mMoviesRepository);
         setHasOptionsMenu(true);
         mSortMoviePreferences = context.getSharedPreferences(getString(R.string.movie_pref), Context.MODE_PRIVATE);
@@ -132,6 +142,8 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
                 mMoviesListPresenter.refreshPage();
             }
         });
+        if (mMoviesListPresenter != null)
+            mMoviesListPresenter.loadFavouriteMovies();
     }
 
     @Override
@@ -139,22 +151,35 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
         inflater.inflate(R.menu.menu_movies_home, menu);
         int sort_pref = getMovieSortPreference();
         MenuItem item = menu.findItem(R.id.movie_sort).getSubMenu().findItem(sort_pref);
+        int sortId;
         if (item != null)
             switch (item.getItemId()) {
                 case R.id.movies_popular_sort:
                     item.setChecked(true);
-                    mMoviesListPresenter.changeMovieSort(MoviesListContract.POPULAR_MOVIE);
+                    sortId = MoviesListContract.POPULAR_MOVIE;
                     break;
                 case R.id.movies_top_rated_sort:
                     item.setChecked(true);
-                    mMoviesListPresenter.changeMovieSort(MoviesListContract.TOP_RATED_MOVIE);
+                    sortId = MoviesListContract.TOP_RATED_MOVIE;
+                    break;
+                case R.id.movies_favourite_sort:
+                    item.setChecked(true);
+                    sortId = MoviesListContract.FAVOURITE_MOVIE;
                     break;
                 default:
+                    sortId = MoviesListContract.POPULAR_MOVIE;
                     setUpDefaultOptionsMenu(menu);
                     break;
             }
-        else
+        else {
+            sortId = MoviesListContract.POPULAR_MOVIE;
             setUpDefaultOptionsMenu(menu);
+        }
+        if (!isMoviesLoaded) {
+            mMoviesListPresenter.changeMovieSort(sortId);
+            isMoviesLoaded = true;
+        }
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private void setUpDefaultOptionsMenu(Menu menu) {
@@ -178,6 +203,11 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
                 mMoviesListPresenter.changeMovieSort(MoviesListContract.TOP_RATED_MOVIE);
                 saveMovieSortPreference(R.id.movies_top_rated_sort);
                 return true;
+            case R.id.movies_favourite_sort:
+                item.setChecked(true);
+                mMoviesListPresenter.changeMovieSort(MoviesListContract.FAVOURITE_MOVIE);
+                saveMovieSortPreference(R.id.movies_favourite_sort);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -198,12 +228,31 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
 
     @Override
     public void showMovieDetails(Movie pMovie) {
-        if (getActivity() != null && pMovie != null)
-            MoviesDetailActivity.startActivity(getActivity(), pMovie);
-        else {
+        if (getActivity() != null && pMovie != null) {
+            pMovie.setFavourite(mMoviesListPresenter.isFavouriteMovie(pMovie.getId()));
+            ((Callback) getActivity()).onItemSelected(pMovie);
+        } else {
             mMoviesListAdapter.notifyDataSetChanged();
             Log.d(TAG, "pMovie or getActivity is null, Check the parameters");
         }
+    }
+
+    @Override
+    public void getFavouriteMovies() {
+        setToolbarTitle(getString(R.string.fav_movies));
+        mMoviesListPresenter.getFavouriteMovies(new MoviesRepository.MoviesLoaderCallback() {
+            @Override
+            public void onSuccess() {
+                mMoviesListAdapter.notifyDataSetChanged();
+                onRefreshComplete();
+            }
+
+            @Override
+            public void onReset() {
+                mMoviesListAdapter.notifyDataSetChanged();
+                onRefreshComplete();
+            }
+        });
     }
 
     private void setToolbarTitle(String pTitle) {
@@ -219,9 +268,14 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
     }
 
     private void onRefreshComplete() {
-        if (mMoviesSwipeRefresh.isRefreshing()) {
+        if (mMoviesSwipeRefresh != null && mMoviesSwipeRefresh.isRefreshing()) {
             mMoviesSwipeRefresh.setRefreshing(false);
         }
+    }
+
+    private void loadInitialDetailFragment() {
+        if (mIsTwoPaneLayout && getActivity() != null)
+            ((Callback) getActivity()).onItemSelected(mMoviesListPresenter.getMovie(0));
     }
 
     private int getMovieSortPreference() {
@@ -235,6 +289,7 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
             public void onSuccess() {
                 mMoviesListAdapter.notifyDataSetChanged();
                 onRefreshComplete();
+                loadInitialDetailFragment();
             }
 
             @Override
@@ -251,6 +306,7 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
             public void onSuccess() {
                 mMoviesListAdapter.notifyDataSetChanged();
                 onRefreshComplete();
+                loadInitialDetailFragment();
             }
 
             @Override

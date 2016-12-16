@@ -26,7 +26,7 @@
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/fragment"
+              android:id="@+id/movie_list_fragment"
               android:name="com.fabinpaul.project_2_popularmovies.features.movieshome.ui.MoviesHomeFragment"
               android:layout_width="match_parent"
               android:layout_height="match_parent"

@@ -31,7 +31,11 @@ public class Movie implements Parcelable {
     protected Integer vote_count;
     protected Boolean video;
     protected Float vote_average;
-    protected Boolean isFavourite;
+    protected Boolean isFavourite = false;
+
+    public Boolean isFavourite() {
+        return isFavourite;
+    }
 
     public Movie() {
         genre_ids = new ArrayList<Integer>();

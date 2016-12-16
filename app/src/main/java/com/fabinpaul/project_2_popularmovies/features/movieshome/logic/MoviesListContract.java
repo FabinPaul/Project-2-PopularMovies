@@ -15,6 +15,7 @@ public interface MoviesListContract {
 
     int POPULAR_MOVIE = 1;
     int TOP_RATED_MOVIE = 2;
+    int FAVOURITE_MOVIE = 3;
 
     interface View {
         void getPopularMovies();
@@ -22,6 +23,8 @@ public interface MoviesListContract {
         void getTopRatedMovies();
 
         void showMovieDetails(Movie pMovie);
+
+        void getFavouriteMovies();
     }
 
     interface UserActionsListener {
@@ -37,7 +40,7 @@ public interface MoviesListContract {
 
     @Retention(RetentionPolicy.SOURCE)
     // Enumerate valid values for this interface
-    @IntDef({POPULAR_MOVIE, TOP_RATED_MOVIE})
+    @IntDef({POPULAR_MOVIE, TOP_RATED_MOVIE, FAVOURITE_MOVIE})
             // Create an interface for validating int types
     @interface MovieSortStatus {
     }

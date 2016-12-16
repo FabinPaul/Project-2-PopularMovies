@@ -16,6 +16,7 @@ import com.fabinpaul.project_2_popularmovies.features.moviesdetail.data.MovieDet
 import com.fabinpaul.project_2_popularmovies.features.moviesdetail.data.Video;
 import com.fabinpaul.project_2_popularmovies.features.movieshome.data.Movie;
 import com.fabinpaul.project_2_popularmovies.features.movieshome.data.MovieList;
+import com.fabinpaul.project_2_popularmovies.features.movieshome.logic.MoviesListContract;
 import com.fabinpaul.project_2_popularmovies.framework.data.MoviesDBContract;
 import com.fabinpaul.project_2_popularmovies.framework.network.CacheImpl;
 import com.fabinpaul.project_2_popularmovies.framework.network.MoviesServiceApi;
@@ -35,19 +36,23 @@ public class MoviesRepositoryImpl implements MoviesRepository, LoaderManager.Loa
     private static final int PAGE_FROM_WHICH_LOADING_NOT_SHOWN = 0;
     private static final int PAGE_FROM_WHICH_DISMISS_NOT_CALLED = 1;
 
-    public static final int GET_FAV_LIST = 0;
-    private int mCallbackId;
+    private static final int GET_FAV_LIST = 0;
+    private static final int GET_FAV_ID_LIST = 1;
+
 
     private final MoviesServiceInterface mMoviesServiceInterface;
     private CompositeSubscription mCompositeSubscription;
     private MovieList mMovieList;
+    private MovieList mFavMovieList;
     private MovieDetails mMovieDetails;
+    private ArrayList<Integer> mFavMovieIdList;
     private String mApiKey;
     private boolean isLoading;
 
     private ProgressDialog mProgressDialog;
     private Context mContext;
     private MoviesLoaderCallback mMoviesLoaderCallback;
+    private int mCurrentSort;
 
     public MoviesRepositoryImpl(Context pContext, MoviesServiceInterface pMoviesServiceInterface) {
         if (!(pContext instanceof Activity)) {
@@ -57,6 +62,8 @@ public class MoviesRepositoryImpl implements MoviesRepository, LoaderManager.Loa
         mMoviesServiceInterface = pMoviesServiceInterface;
         mMovieList = new MovieList();
         mMovieDetails = new MovieDetails();
+        mFavMovieList = new MovieList();
+        mFavMovieIdList = new ArrayList<>();
 
         mCompositeSubscription = new CompositeSubscription();
         mProgressDialog = new ProgressDialog(pContext);
@@ -135,6 +142,7 @@ public class MoviesRepositoryImpl implements MoviesRepository, LoaderManager.Loa
     @Override
     public void getPopularMovies(int pageNoToLoad, @NonNull final MoviesRepositoryCallback pCallback, boolean isRefresh) {
         checkForNull();
+        mCurrentSort = MoviesListContract.POPULAR_MOVIE;
         if (isRefresh) {
             CacheImpl.INSTANCE.removeAllMovieList(MoviesServiceApi.POPULAR_SORT);
         }
@@ -145,6 +153,7 @@ public class MoviesRepositoryImpl implements MoviesRepository, LoaderManager.Loa
     @Override
     public void getTopRatedMovies(int pageNoToLoad, @NonNull final MoviesRepositoryCallback pCallback, boolean isRefresh) {
         checkForNull();
+        mCurrentSort = MoviesListContract.TOP_RATED_MOVIE;
         if (isRefresh) {
             CacheImpl.INSTANCE.removeAllMovieList(MoviesServiceApi.TOP_RATED_SORT);
         }
@@ -181,24 +190,47 @@ public class MoviesRepositoryImpl implements MoviesRepository, LoaderManager.Loa
     }
 
     @Override
-    public void setMovieAsFavourite() {
-        mContext.getContentResolver().insert(MoviesDBContract.MoviesTB.CONTENT_URI, getMovieTBContentValues(mMovieDetails));
-        mContext.getContentResolver().insert(MoviesDBContract.FavouriteMoviesTB.CONTENT_URI, getFavMovieTBContentValues(mMovieDetails.getId()));
+    public void setMovieAsFavourite(boolean isFav) {
+        if (isFav) {
+            mContext.getContentResolver().insert(MoviesDBContract.MoviesTB.CONTENT_URI, getMovieTBContentValues(mMovieDetails));
+            mContext.getContentResolver().insert(MoviesDBContract.FavouriteMoviesTB.CONTENT_URI, getFavMovieTBContentValues(mMovieDetails.getId()));
+        } else {
+            mContext.getContentResolver().delete(MoviesDBContract.FavouriteMoviesTB.CONTENT_URI,
+                    MoviesDBContract.FavouriteMoviesTB.COLUMN_MOVIE_ID + "=?", new String[]{String.valueOf(mMovieDetails.getId())});
+        }
+        mMovieDetails.setFavourite(isFav);
     }
 
     @Override
     public void getFavouriteMovies(@NonNull MoviesLoaderCallback pCallback) {
         mMoviesLoaderCallback = pCallback;
+        mCurrentSort = MoviesListContract.FAVOURITE_MOVIE;
+        mMovieList.clear();
+        mMovieList.updateMovieList(mFavMovieList);
         ((Activity) mContext).getLoaderManager().initLoader(GET_FAV_LIST, null, this);
     }
 
     @Override
+    public void loadFavouriteMovieId() {
+        ((Activity) mContext).getLoaderManager().initLoader(GET_FAV_ID_LIST, null, this);
+    }
+
+    @Override
+    public boolean isFavouriteMovie(int pMovieId) {
+        return mFavMovieIdList != null && mFavMovieIdList.contains(pMovieId);
+    }
+
+    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        mCallbackId = id;
         switch (id) {
             case GET_FAV_LIST:
                 return new CursorLoader(mContext,
                         MoviesDBContract.FavouriteMoviesTB.buildFavMoveListUri(),
+                        null, null,
+                        null, null);
+            case GET_FAV_ID_LIST:
+                return new CursorLoader(mContext,
+                        MoviesDBContract.FavouriteMoviesTB.CONTENT_URI,
                         null, null,
                         null, null);
             default:
@@ -208,27 +240,44 @@ public class MoviesRepositoryImpl implements MoviesRepository, LoaderManager.Loa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        switch (mCallbackId) {
+        switch (loader.getId()) {
             case GET_FAV_LIST:
                 ArrayList<Movie> movies = getMovieListFromCursor(data);
-                mMovieList.clear();
+                mFavMovieList.clear();
                 MovieList movieList = new MovieList();
                 movieList.setPage(1);
                 movieList.setResults(movies);
                 movieList.setTotal_pages(1);
                 movieList.setTotal_results(movies.size());
-                mMovieList.updateMovieList(movieList);
-                if (mMoviesLoaderCallback != null)
-                    mMoviesLoaderCallback.onSuccess();
+                mFavMovieList.updateMovieList(movieList);
+                if (mCurrentSort == MoviesListContract.FAVOURITE_MOVIE) {
+                    mMovieList.clear();
+                    mMovieList.updateMovieList(mFavMovieList);
+                    if (mMoviesLoaderCallback != null)
+                        mMoviesLoaderCallback.onSuccess();
+                }
+                break;
+            case GET_FAV_ID_LIST:
+                mFavMovieIdList = getMovieIdFromCursor(data);
                 break;
             default:
                 break;
         }
     }
 
+    private ArrayList<Integer> getMovieIdFromCursor(Cursor data) {
+        ArrayList<Integer> movieIdList = new ArrayList<>();
+        if (data != null && data.moveToFirst()) {
+            do {
+                movieIdList.add(data.getInt(data.getColumnIndex(MoviesDBContract.FavouriteMoviesTB.COLUMN_MOVIE_ID)));
+            } while (data.moveToNext());
+        }
+        return movieIdList;
+    }
+
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        if (mMoviesLoaderCallback != null)
+        if (mMoviesLoaderCallback != null && mCurrentSort == MoviesListContract.FAVOURITE_MOVIE)
             mMoviesLoaderCallback.onReset();
     }
 
@@ -310,7 +359,7 @@ public class MoviesRepositoryImpl implements MoviesRepository, LoaderManager.Loa
     private void dismissProgressDialog() {
         if (mMovieList.getPage() > PAGE_FROM_WHICH_DISMISS_NOT_CALLED)
             return;
-        if (mProgressDialog != null || mProgressDialog.isShowing())
+        if (mProgressDialog != null && mProgressDialog.isShowing())
             mProgressDialog.dismiss();
     }
 

@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 
 import com.fabinpaul.project_2_popularmovies.features.moviesdetail.data.MovieDetails;
 import com.fabinpaul.project_2_popularmovies.features.moviesdetail.data.Video;
-import com.fabinpaul.project_2_popularmovies.features.movieshome.data.Movie;
 import com.fabinpaul.project_2_popularmovies.framework.network.MoviesServiceApi;
 import com.fabinpaul.project_2_popularmovies.framework.repository.MoviesRepository;
 
@@ -50,8 +49,8 @@ public class MovieDetailsPresenter implements MovieDetailsContract.UserInteracti
     }
 
     @Override
-    public void setMovieAsFavourite() {
-        mMoviesRepository.setMovieAsFavourite();
+    public void setMovieAsFavourite(boolean isFav) {
+        mMoviesRepository.setMovieAsFavourite(isFav);
     }
 
     public MovieDetails getMovieDetails() {

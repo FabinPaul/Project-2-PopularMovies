@@ -18,6 +18,8 @@
                       android:title="@string/popular_movies"/>
                 <item android:id="@+id/movies_top_rated_sort"
                       android:title="@string/top_rated_movies" />
+                <item android:id="@+id/movies_favourite_sort"
+                      android:title="@string/fav_movies" />
             </group>
         </menu>
     </item>
