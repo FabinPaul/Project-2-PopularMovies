@@ -5,22 +5,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.fabinpaul.project_2_popularmovies.R;
 import com.fabinpaul.project_2_popularmovies.features.movieshome.data.Movie;
 import com.fabinpaul.project_2_popularmovies.framework.repository.MoviesRepository;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 public class MoviesDetailActivity extends AppCompatActivity {
 
-    private Unbinder mUnBinder;
+//    private Unbinder mUnBinder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_movies_detail);
-        mUnBinder = ButterKnife.bind(this);
+//        setContentView(R.layout.activity_movies_detail);
+//        mUnBinder = ButterKnife.bind(this);
 
         Movie movieDetails = null;
         if (getIntent() != null && getIntent().getParcelableExtra(MoviesRepository.MOVIE_EXTRA) != null) {
@@ -31,7 +27,8 @@ public class MoviesDetailActivity extends AppCompatActivity {
             MoviesDetailFragment fragment = MoviesDetailFragment.newInstance(movieDetails);
             getFragmentManager()
                     .beginTransaction()
-                    .add(R.id.movie_detail_fragment_container, fragment)
+//                    .add(R.id.movie_detail_fragment_container, fragment)
+                    .add(android.R.id.content, fragment)
                     .commit();
         }
     }
@@ -42,9 +39,9 @@ public class MoviesDetailActivity extends AppCompatActivity {
         pActivity.startActivity(intent);
     }
 
-    @Override
+    /*@Override
     protected void onDestroy() {
         super.onDestroy();
         mUnBinder.unbind();
-    }
+    }*/
 }

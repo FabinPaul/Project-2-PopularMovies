@@ -55,6 +55,7 @@ public class Video implements Parcelable {
         return site.equalsIgnoreCase(YOUTUBE);
     }
 
+    @SuppressWarnings("WeakerAccess")
     protected Video(Parcel in) {
         site = in.readString();
         id = in.readString();

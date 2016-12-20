@@ -18,7 +18,7 @@ import com.fabinpaul.project_2_popularmovies.features.movieshome.data.Movie;
 import com.fabinpaul.project_2_popularmovies.features.movieshome.data.MovieList;
 import com.fabinpaul.project_2_popularmovies.features.movieshome.logic.MoviesListContract;
 import com.fabinpaul.project_2_popularmovies.framework.data.MoviesDBContract;
-import com.fabinpaul.project_2_popularmovies.framework.network.CacheImpl;
+import com.fabinpaul.project_2_popularmovies.framework.network.Cache;
 import com.fabinpaul.project_2_popularmovies.framework.network.MoviesServiceApi;
 import com.fabinpaul.project_2_popularmovies.framework.network.MoviesServiceInterface;
 
@@ -144,7 +144,7 @@ public class MoviesRepositoryImpl implements MoviesRepository, LoaderManager.Loa
         checkForNull();
         mCurrentSort = MoviesListContract.POPULAR_MOVIE;
         if (isRefresh) {
-            CacheImpl.INSTANCE.removeAllMovieList(MoviesServiceApi.POPULAR_SORT);
+            Cache.INSTANCE.removeAllMovieList(MoviesServiceApi.POPULAR_SORT);
         }
         showProgressDialog(mContext.getString(R.string.load_popular_movies), isRefresh);
         getMoviesList(MoviesServiceApi.POPULAR_SORT, pageNoToLoad, pCallback);
@@ -155,7 +155,7 @@ public class MoviesRepositoryImpl implements MoviesRepository, LoaderManager.Loa
         checkForNull();
         mCurrentSort = MoviesListContract.TOP_RATED_MOVIE;
         if (isRefresh) {
-            CacheImpl.INSTANCE.removeAllMovieList(MoviesServiceApi.TOP_RATED_SORT);
+            Cache.INSTANCE.removeAllMovieList(MoviesServiceApi.TOP_RATED_SORT);
         }
         showProgressDialog(mContext.getString(R.string.load_top_rated_movies), isRefresh);
         getMoviesList(MoviesServiceApi.TOP_RATED_SORT, pageNoToLoad, pCallback);

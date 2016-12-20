@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!--Dimens-->
     <dimen name="details_poster_width">110dp</dimen>
@@ -9,9 +9,10 @@
     <dimen name="video_thumbnail_height">115dp</dimen>
 
     <!--Strings-->
-    <string name="title_activity_movies_detail">Movies Detail</string>
+    <!--<string name="title_activity_movies_detail">Movies Detail</string>-->
     <string name="loading_movie">Loading movie</string>
-    <string name="runtime_units">%1$d minutes</string>
+    <string name="runtime_units" tools:ignore="PluralsCandidate">%1$d minutes</string>
     <string name="share">Share</string>
+    <string name="play_trailer">Play trailer</string>
 
 </resources>

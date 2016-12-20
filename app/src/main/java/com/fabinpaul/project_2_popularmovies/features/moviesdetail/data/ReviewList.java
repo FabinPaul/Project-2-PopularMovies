@@ -32,10 +32,11 @@ public class ReviewList implements Parcelable {
         return total_results;
     }
 
+    @SuppressWarnings("WeakerAccess")
     protected ReviewList(Parcel in) {
         page = in.readInt();
         if (in.readByte() == 0x01) {
-            results = new ArrayList<Review>();
+            results = new ArrayList<>();
             in.readList(results, Review.class.getClassLoader());
         } else {
             results = null;

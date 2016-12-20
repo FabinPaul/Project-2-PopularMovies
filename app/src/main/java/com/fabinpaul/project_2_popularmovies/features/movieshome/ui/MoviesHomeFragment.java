@@ -36,10 +36,12 @@ import butterknife.Unbinder;
 /**
  * A placeholder fragment containing a simple view.
  */
+@SuppressWarnings("WeakerAccess")
 public class MoviesHomeFragment extends Fragment implements MoviesListContract.View {
 
     private static final int GRID_SPAN_COUNT = 2;
     private static final String TAG = MoviesHomeFragment.class.getSimpleName();
+    private static final String CURRENT_POSITION = "com.fabinpaul.project_2_popularmovies.CurrentMoviePosition";
 
     @BindView(R.id.movies_recycvw_list)
     RecyclerView mMoviesRecycVw;
@@ -53,6 +55,7 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
     private Unbinder mUnBinder;
     private boolean mIsTwoPaneLayout;
     private boolean isMoviesLoaded;
+    private GridLayoutManager mGridLayoutManager;
 
     public void setAsTwoPaneLayout(boolean isTwoPaneLayout) {
         mIsTwoPaneLayout = isTwoPaneLayout;
@@ -93,6 +96,7 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
     @Override
     public void onSaveInstanceState(Bundle outState) {
         mMoviesRepository.onSaveStateInstance(outState);
+        outState.putInt(CURRENT_POSITION, mGridLayoutManager.findFirstVisibleItemPosition());
         super.onSaveInstanceState(outState);
     }
 
@@ -100,6 +104,10 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mMoviesRepository.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null && savedInstanceState.containsKey(CURRENT_POSITION)) {
+            int currentPosition = savedInstanceState.getInt(CURRENT_POSITION);
+            mGridLayoutManager.scrollToPosition(currentPosition);
+        }
     }
 
     private void attachFragment(Context context) {
@@ -114,14 +122,14 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_movies_home, container, false);
         mUnBinder = ButterKnife.bind(this, view);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), GRID_SPAN_COUNT);
-        mMoviesRecycVw.setLayoutManager(gridLayoutManager);
+        mGridLayoutManager = new GridLayoutManager(getActivity(), GRID_SPAN_COUNT);
+        mMoviesRecycVw.setLayoutManager(mGridLayoutManager);
         ItemOffsetDecoration itemDecoration = new ItemOffsetDecoration(getActivity(), R.dimen.movie_grid_item_offset);
         mMoviesRecycVw.addItemDecoration(itemDecoration);
         mMoviesSwipeRefresh.setColorSchemeResources(
                 R.color.swipe_color_1, R.color.swipe_color_2,
                 R.color.swipe_color_3, R.color.swipe_color_4);
-        EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(gridLayoutManager) {
+        EndlessRecyclerViewScrollListener scrollListener = new EndlessRecyclerViewScrollListener(mGridLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 mMoviesListPresenter.loadMoreDataFromApi(page + 1);
@@ -167,13 +175,11 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
                     sortId = MoviesListContract.FAVOURITE_MOVIE;
                     break;
                 default:
-                    sortId = MoviesListContract.POPULAR_MOVIE;
-                    setUpDefaultOptionsMenu(menu);
+                    sortId = setUpDefaultOptionsMenu(menu);
                     break;
             }
         else {
-            sortId = MoviesListContract.POPULAR_MOVIE;
-            setUpDefaultOptionsMenu(menu);
+            sortId = setUpDefaultOptionsMenu(menu);
         }
         if (!isMoviesLoaded) {
             mMoviesListPresenter.changeMovieSort(sortId);
@@ -182,12 +188,13 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private void setUpDefaultOptionsMenu(Menu menu) {
+    private @MoviesListContract.MovieSortStatus
+    int setUpDefaultOptionsMenu(Menu menu) {
         menu.findItem(R.id.movie_sort)
                 .getSubMenu()
                 .findItem(R.id.movies_popular_sort)
                 .setChecked(true);
-        mMoviesListPresenter.changeMovieSort(MoviesListContract.POPULAR_MOVIE);
+        return MoviesListContract.POPULAR_MOVIE;
     }
 
     @Override

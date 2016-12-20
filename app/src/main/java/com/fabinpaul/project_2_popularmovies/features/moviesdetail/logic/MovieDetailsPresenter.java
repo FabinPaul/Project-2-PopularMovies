@@ -15,8 +15,8 @@ import java.util.ArrayList;
 
 public class MovieDetailsPresenter implements MovieDetailsContract.UserInteractions {
 
-    private MovieDetailsContract.View mView;
-    private MoviesRepository mMoviesRepository;
+    private final MovieDetailsContract.View mView;
+    private final MoviesRepository mMoviesRepository;
 
     public MovieDetailsPresenter(MovieDetailsContract.View view, MoviesRepository moviesRepository) {
         mView = view;

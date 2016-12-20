@@ -18,9 +18,9 @@ import static junit.framework.Assert.assertTrue;
 /**
  * Created by Fabin Paul, Eous Solutions Delivery on 11/24/2016 10:13 AM.
  */
-public class DBTestUtils {
+class DBTestUtils {
 
-    public static void validateCurrentRecord(String errorString, Cursor queryValues, ContentValues expectedValues) {
+    static void validateCurrentRecord(String errorString, Cursor queryValues, ContentValues expectedValues) {
         Set<Map.Entry<String, Object>> valueSet = expectedValues.valueSet();
         for (Map.Entry<String, Object> value : valueSet) {
             String columnName = value.getKey();
@@ -32,12 +32,11 @@ public class DBTestUtils {
         }
     }
 
-    public static ContentValues create_Rush_MovieValues() {
-        ;
+    static ContentValues create_Rush_MovieValues() {
         return create_Rush_MovieValues(96721);
     }
 
-    public static ContentValues create_Rush_MovieValues(int movieId) {
+    private static ContentValues create_Rush_MovieValues(int movieId) {
         ContentValues contentValues = new ContentValues();
 
         // @formatter:off
@@ -55,7 +54,7 @@ public class DBTestUtils {
         return contentValues;
     }
 
-    public static ContentValues[] create_Bulk_MovieValues(int count) {
+    static ContentValues[] create_Bulk_MovieValues(int count) {
         ContentValues[] contentValues = new ContentValues[count];
         int movieId = 96721;
 
@@ -65,7 +64,7 @@ public class DBTestUtils {
         return contentValues;
     }
 
-    public static ContentValues updated_Rush_MovieValues() {
+    static ContentValues updated_Rush_MovieValues() {
         ContentValues contentValues = new ContentValues();
 
         // @formatter:off
@@ -83,7 +82,7 @@ public class DBTestUtils {
         return contentValues;
     }
 
-    public static ContentValues create_Fav_MovieValue(int movieId) {
+    static ContentValues create_Fav_MovieValue(int movieId) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(MoviesDBContract.FavouriteMoviesTB.COLUMN_MOVIE_ID, movieId);
         return contentValues;
@@ -115,7 +114,7 @@ public class DBTestUtils {
             mContentChanged = true;
         }
 
-        public void waitForNotificationOrFail() {
+        void waitForNotificationOrFail() {
             new PollingCheck(5000) {
 
                 @Override

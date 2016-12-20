@@ -44,7 +44,7 @@ public interface MoviesServiceApi {
     // Enumerate valid values for this interface
     @StringDef({W300, W342, W500, W700, W1280})
     // Create an interface for validating int types
-    public @interface BackdropImgSize {
+    @interface BackdropImgSize {
     }
 
     @Retention(RetentionPolicy.SOURCE)

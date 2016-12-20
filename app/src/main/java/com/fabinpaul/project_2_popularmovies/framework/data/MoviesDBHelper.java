@@ -12,9 +12,9 @@ public class MoviesDBHelper extends SQLiteOpenHelper {
 
     private static final String TAG = MoviesDBHelper.class.getSimpleName();
 
-    public static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 1;
 
-    public static final String DATABASE_NAME = "movies.db";
+    private static final String DATABASE_NAME = "movies.db";
 
     // @formatter:off
     private static final String CREATE_MOVIES_TB =

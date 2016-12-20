@@ -9,6 +9,7 @@ import android.provider.BaseColumns;
  * Created by Fabin Paul, Eous Solutions Delivery on 11/22/2016 11:25 AM.
  */
 
+@SuppressWarnings("WeakerAccess")
 public final class MoviesDBContract {
 
     public static final String CONTENT_AUTHORITY = "com.fabinpaul.project_2_popularmovies";

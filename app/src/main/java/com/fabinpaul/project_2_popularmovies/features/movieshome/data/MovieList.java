@@ -25,6 +25,7 @@ public class MovieList implements Parcelable {
         return results;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public int getTotalResults() {
         return total_results;
     }
@@ -68,10 +69,11 @@ public class MovieList implements Parcelable {
     public MovieList() {
     }
 
+    @SuppressWarnings("WeakerAccess")
     protected MovieList(Parcel in) {
         page = in.readInt();
         if (in.readByte() == 0x01) {
-            results = new ArrayList<Movie>();
+            results = new ArrayList<>();
             in.readList(results, Movie.class.getClassLoader());
         } else {
             results = null;

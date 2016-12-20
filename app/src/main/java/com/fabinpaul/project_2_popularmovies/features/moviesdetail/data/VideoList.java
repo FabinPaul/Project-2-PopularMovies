@@ -18,9 +18,10 @@ public class VideoList implements Parcelable {
         return results;
     }
 
+    @SuppressWarnings("WeakerAccess")
     protected VideoList(Parcel in) {
         if (in.readByte() == 0x01) {
-            results = new ArrayList<Video>();
+            results = new ArrayList<>();
             in.readList(results, Video.class.getClassLoader());
         } else {
             results = null;

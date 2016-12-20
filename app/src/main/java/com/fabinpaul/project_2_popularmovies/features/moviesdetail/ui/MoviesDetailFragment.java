@@ -46,6 +46,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+@SuppressWarnings("WeakerAccess")
 public class MoviesDetailFragment extends Fragment implements MovieDetailsContract.View {
 
     private static final String TAG = MoviesDetailFragment.class.getSimpleName();

@@ -26,7 +26,7 @@ import butterknife.Unbinder;
 public class MovieVideosListAdapter extends RecyclerView.Adapter<MovieVideosListAdapter.ViewHolder> {
 
     private Unbinder mUnBinder;
-    private MovieDetailsPresenter mDetailsPresenter;
+    private final MovieDetailsPresenter mDetailsPresenter;
     private Context mContext;
 
     static MovieVideosListAdapter setMoviesVideoListAdapter(RecyclerView pMoviesVideoListRecycrVw, MovieDetailsPresenter pMoviesDetailsPresenter) {

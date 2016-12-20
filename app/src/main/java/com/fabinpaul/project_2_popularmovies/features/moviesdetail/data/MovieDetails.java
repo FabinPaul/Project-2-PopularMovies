@@ -82,6 +82,7 @@ public class MovieDetails extends Movie implements Parcelable {
     public MovieDetails() {
     }
 
+    @SuppressWarnings("WeakerAccess")
     protected MovieDetails(Parcel in) {
         super(in);
         budget = in.readByte() == 0x00 ? null : in.readDouble();

@@ -15,6 +15,7 @@ public class Genres implements Parcelable {
         return name;
     }
 
+    @SuppressWarnings("WeakerAccess")
     protected Genres(Parcel in) {
         id = in.readString();
         name = in.readString();

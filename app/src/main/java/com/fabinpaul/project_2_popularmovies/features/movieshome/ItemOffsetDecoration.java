@@ -15,6 +15,7 @@ public class ItemOffsetDecoration extends RecyclerView.ItemDecoration {
 
     private int mItemOffset;
 
+    @SuppressWarnings("WeakerAccess")
     public ItemOffsetDecoration(int itemOffset) {
         mItemOffset = itemOffset;
     }

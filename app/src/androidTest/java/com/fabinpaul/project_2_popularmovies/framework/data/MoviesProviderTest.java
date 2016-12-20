@@ -250,7 +250,7 @@ public class MoviesProviderTest {
         movieCursor.moveToFirst();
 
         for (int i = 0; i < BULK_INSERT_RECORDS_TO_INSERT; i++, movieCursor.moveToNext()) {
-            DBTestUtils.validateCurrentRecord("Error: validation movie record at postion " + i, movieCursor, bulkMovieValues[i]);
+            DBTestUtils.validateCurrentRecord("Error: validation movie record at position " + i, movieCursor, bulkMovieValues[i]);
         }
 
         movieCursor.close();

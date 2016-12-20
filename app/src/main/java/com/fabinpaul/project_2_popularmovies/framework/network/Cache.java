@@ -6,17 +6,15 @@ import java.util.HashMap;
  * Created by Fabin Paul, Eous Solutions Delivery on 11/7/2016 12:32 PM.
  */
 
-public enum CacheImpl implements CacheInterface {
+public enum Cache {
     INSTANCE;
 
-    private HashMap<Object, Object> mInMemoryCache = new HashMap<>();
+    private final HashMap<Object, Object> mInMemoryCache = new HashMap<>();
 
-    @Override
     public void addToCache(Object pTag, Object pObject) {
         mInMemoryCache.put(pTag, pObject);
     }
 
-    @Override
     public Object getFromCache(Object pTag) {
         return mInMemoryCache.get(pTag);
     }

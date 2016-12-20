@@ -8,6 +8,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import static com.fabinpaul.project_2_popularmovies.framework.data.MoviesDBContract.CONTENT_AUTHORITY;
@@ -65,7 +66,7 @@ public class MoviesProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public Cursor query(Uri uri, String[] projection, String pSelection, String[] pSelectionArgs, String pSortOrder) {
+    public Cursor query(@NonNull Uri uri, String[] projection, String pSelection, String[] pSelectionArgs, String pSortOrder) {
         Cursor rCursor;
         switch (sUriMatcher.match(uri)) {
             case MOVIE:
@@ -112,7 +113,7 @@ public class MoviesProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public String getType(Uri pUri) {
+    public String getType(@NonNull Uri pUri) {
         switch (sUriMatcher.match(pUri)) {
             case MOVIE_LIST:
                 return MoviesTB.CONTENT_TYPE;
@@ -129,7 +130,7 @@ public class MoviesProvider extends ContentProvider {
 
     @Nullable
     @Override
-    public Uri insert(Uri pUri, ContentValues pContentValues) {
+    public Uri insert(@NonNull Uri pUri, ContentValues pContentValues) {
         Uri rUri;
         switch (sUriMatcher.match(pUri)) {
             case MOVIE_LIST: {
@@ -159,7 +160,7 @@ public class MoviesProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(Uri pUri, String pSelection, String[] pSelectionArgs) {
+    public int delete(@NonNull Uri pUri, String pSelection, String[] pSelectionArgs) {
         int rowsDeleted;
         if (null == pSelection)
             pSelection = "1";
@@ -179,7 +180,7 @@ public class MoviesProvider extends ContentProvider {
     }
 
     @Override
-    public int update(Uri pUri, ContentValues pContentValues, String pSelection, String[] pSelectionArgs) {
+    public int update(@NonNull Uri pUri, ContentValues pContentValues, String pSelection, String[] pSelectionArgs) {
         int rowsUpdated;
         switch (sUriMatcher.match(pUri)) {
             case MOVIE_LIST:
@@ -197,7 +198,7 @@ public class MoviesProvider extends ContentProvider {
     }
 
     @Override
-    public int bulkInsert(Uri uri, ContentValues[] values) {
+    public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
         final SQLiteDatabase db = mMoviesDBHelper.getWritableDatabase();
         switch (sUriMatcher.match(uri)) {
             case MOVIE_LIST:

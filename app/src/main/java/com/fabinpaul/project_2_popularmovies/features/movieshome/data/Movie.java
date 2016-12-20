@@ -14,6 +14,7 @@ import java.util.Locale;
  * Created by Fabin Paul on 11/5/20161:16 PM 1:16 PM.
  */
 
+@SuppressWarnings("WeakerAccess")
 public class Movie implements Parcelable {
 
 
@@ -38,7 +39,7 @@ public class Movie implements Parcelable {
     }
 
     public Movie() {
-        genre_ids = new ArrayList<Integer>();
+        genre_ids = new ArrayList<>();
     }
 
     public void setId(Integer id) {
@@ -155,7 +156,7 @@ public class Movie implements Parcelable {
         overview = in.readString();
         release_date = in.readString();
         if (in.readByte() == 0x01) {
-            genre_ids = new ArrayList<Integer>();
+            genre_ids = new ArrayList<>();
             in.readList(genre_ids, Integer.class.getClassLoader());
         } else {
             genre_ids = null;

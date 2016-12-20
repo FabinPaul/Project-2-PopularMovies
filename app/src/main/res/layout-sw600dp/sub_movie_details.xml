@@ -35,6 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/movie_details_title_txtvw"
             android:layout_marginLeft="@dimen/dimen_4"
+            android:layout_marginStart="@dimen/dimen_4"
             android:padding="@dimen/dimen_4"
             android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle"
             tools:text="Release Date"/>
@@ -45,6 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/movie_details_release_date_txtvw"
             android:layout_marginLeft="@dimen/dimen_4"
+            android:layout_marginStart="@dimen/dimen_4"
             android:padding="@dimen/dimen_4"
             android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle"
             tools:text="Runtime"/>

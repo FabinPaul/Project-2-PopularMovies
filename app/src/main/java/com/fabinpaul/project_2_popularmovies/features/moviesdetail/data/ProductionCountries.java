@@ -11,6 +11,7 @@ public class ProductionCountries implements Parcelable {
     private String name;
     private String iso_3166_1;
 
+    @SuppressWarnings("WeakerAccess")
     protected ProductionCountries(Parcel in) {
         name = in.readString();
         iso_3166_1 = in.readString();

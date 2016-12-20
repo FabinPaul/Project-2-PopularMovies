@@ -30,6 +30,7 @@ public class Review implements Parcelable {
         return url;
     }
 
+    @SuppressWarnings("WeakerAccess")
     protected Review(Parcel in) {
         id = in.readString();
         author = in.readString();

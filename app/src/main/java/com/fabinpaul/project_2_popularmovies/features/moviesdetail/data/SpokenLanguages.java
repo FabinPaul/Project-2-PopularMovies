@@ -12,6 +12,7 @@ public class SpokenLanguages implements Parcelable {
     private String iso_639_1;
     private String name;
 
+    @SuppressWarnings("WeakerAccess")
     protected SpokenLanguages(Parcel in) {
         iso_639_1 = in.readString();
         name = in.readString();

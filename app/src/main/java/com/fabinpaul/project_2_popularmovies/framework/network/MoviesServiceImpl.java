@@ -26,7 +26,7 @@ public class MoviesServiceImpl implements MoviesServiceInterface {
     private static final String TAG = MoviesServiceImpl.class.getSimpleName();
     private static final String ADDITIONAL_RESPONSE = "videos,reviews";
 
-    private Retrofit retrofit = new Retrofit.Builder()
+    private final Retrofit retrofit = new Retrofit.Builder()
             .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(MoviesServiceApi.BASE_URL)
@@ -40,8 +40,8 @@ public class MoviesServiceImpl implements MoviesServiceInterface {
             throw new NullPointerException("Service Callback cannot be null for " + moviesSort);
         }
         Observable<MovieList> movieListObservable;
-        if ((CacheImpl.INSTANCE.getFromCache(moviesSort + page) != null)) {
-            MovieList movieList = (MovieList) CacheImpl.INSTANCE.getFromCache(moviesSort + page);
+        if ((Cache.INSTANCE.getFromCache(moviesSort + page) != null)) {
+            MovieList movieList = (MovieList) Cache.INSTANCE.getFromCache(moviesSort + page);
             movieListObservable = Observable.just(movieList);
         } else {
             movieListObservable = retrofit.create(MoviesServiceApi.class)
@@ -65,7 +65,7 @@ public class MoviesServiceImpl implements MoviesServiceInterface {
 
                     @Override
                     public void onNext(MovieList pMovieList) {
-                        CacheImpl.INSTANCE.addToCache(moviesSort + page, pMovieList);
+                        Cache.INSTANCE.addToCache(moviesSort + page, pMovieList);
                         pCallback.onSuccess(pMovieList);
                     }
                 });
@@ -77,8 +77,8 @@ public class MoviesServiceImpl implements MoviesServiceInterface {
             throw new NullPointerException("Service Callback cannot be null for movieId " + pMovieId);
         }
         Observable<MovieDetails> movieDetailsObservable;
-        if ((CacheImpl.INSTANCE.getFromCache(pMovieId) != null)) {
-            MovieDetails movieDetails = (MovieDetails) CacheImpl.INSTANCE.getFromCache(pMovieId);
+        if ((Cache.INSTANCE.getFromCache(pMovieId) != null)) {
+            MovieDetails movieDetails = (MovieDetails) Cache.INSTANCE.getFromCache(pMovieId);
             movieDetailsObservable = Observable.just(movieDetails);
         } else {
             movieDetailsObservable = retrofit.create(MoviesServiceApi.class)
@@ -102,7 +102,7 @@ public class MoviesServiceImpl implements MoviesServiceInterface {
 
                     @Override
                     public void onNext(MovieDetails movieDetails) {
-                        CacheImpl.INSTANCE.addToCache(pMovieId, movieDetails);
+                        Cache.INSTANCE.addToCache(pMovieId, movieDetails);
                         pCallback.onSuccess(movieDetails);
                     }
                 });

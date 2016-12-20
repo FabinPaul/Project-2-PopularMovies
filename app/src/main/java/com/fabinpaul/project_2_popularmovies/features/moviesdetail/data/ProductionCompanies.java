@@ -11,6 +11,7 @@ public class ProductionCompanies implements Parcelable {
     private String id;
     private String name;
 
+    @SuppressWarnings("WeakerAccess")
     protected ProductionCompanies(Parcel in) {
         id = in.readString();
         name = in.readString();
