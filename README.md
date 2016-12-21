@@ -4,7 +4,7 @@ This is the second project developed as part of Udacity's Android Developer Nano
 <img src="art/phone_movies.png" height="400" alt="Screenshot"/>
 <img src="art/phone_details.png" height="400" alt="Screenshot"/>
 
-<img src="art/tablet_movies1.png" width="600" alt="Screenshot"/>
+<img src="art/tablet_movies1.png" width="400" alt="Screenshot"/>
 <img src="art/tablet_movies2.png" width="800" alt="Screenshot"/>
 
 ### Getting Started
