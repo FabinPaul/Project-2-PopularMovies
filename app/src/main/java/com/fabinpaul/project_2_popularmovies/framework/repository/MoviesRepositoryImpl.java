@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.fabinpaul.project_2_popularmovies.BuildConfig;
 import com.fabinpaul.project_2_popularmovies.R;
 import com.fabinpaul.project_2_popularmovies.features.moviesdetail.data.MovieDetails;
 import com.fabinpaul.project_2_popularmovies.features.moviesdetail.data.Video;
@@ -69,7 +70,7 @@ public class MoviesRepositoryImpl implements MoviesRepository, LoaderManager.Loa
         mProgressDialog = new ProgressDialog(pContext);
         mProgressDialog.setIndeterminate(true);
 
-        mApiKey = mContext.getString(R.string.api_key);
+        mApiKey = BuildConfig.API_KEY;
     }
 
     @Override
@@ -331,14 +332,16 @@ public class MoviesRepositoryImpl implements MoviesRepository, LoaderManager.Loa
                     @Override
                     public void onSuccess(MovieList movies) {
                         mMovieList.updateMovieList(movies);
-                        pCallback.onSuccess();
+                        if (pCallback != null)
+                            pCallback.onSuccess();
                         isLoading = false;
                         dismissProgressDialog();
                     }
 
                     @Override
                     public void onFailure(String message) {
-                        pCallback.onFailure(message);
+                        if (pCallback != null)
+                            pCallback.onFailure(message);
                         isLoading = false;
                         dismissProgressDialog();
                     }

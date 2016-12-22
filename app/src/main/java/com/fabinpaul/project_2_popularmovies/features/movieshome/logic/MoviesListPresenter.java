@@ -54,14 +54,14 @@ public class MoviesListPresenter implements MoviesListContract.UserActionsListen
 
     @Override
     public void moviesOnClick(int pPosition) {
-        mView.showMovieDetails(mMoviesRepository.getMovie(pPosition));
+        mView.showMovieDetails(mMoviesRepository.getMovie(pPosition),pPosition);
     }
 
     @Override
     public void changeMovieSort(int pSortId) {
+        mCurrentMovieSortId = pSortId;
         if (mCurrentMovieSortId == 0 && mMoviesRepository.getMovie(0) != null)
             return;
-        mCurrentMovieSortId = pSortId;
         mMoviesRepository.clearMoviesList();
         if (pSortId == MoviesListContract.POPULAR_MOVIE) {
             mView.getPopularMovies();

@@ -22,7 +22,7 @@ public interface MoviesListContract {
 
         void getTopRatedMovies();
 
-        void showMovieDetails(Movie pMovie);
+        void showMovieDetails(Movie pMovie, int pPosition);
 
         void getFavouriteMovies();
     }

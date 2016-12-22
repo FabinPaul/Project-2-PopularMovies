@@ -38,6 +38,7 @@ public class MoviesHomeActivity extends AppCompatActivity implements MoviesHomeF
                     .beginTransaction()
                     .replace(R.id.movie_detail_fragment_container, fragment, DETAIL_FRAGMENT)
                     .commit();
+
         } else
             MoviesDetailActivity.startActivity(this, pMovie);
     }

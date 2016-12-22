@@ -17,6 +17,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+
+        applicationVariants.all { variant ->
+            variant.buildConfigField "String", "API_KEY", "\""+getApiKey()+"\""
+        }
     }
     packagingOptions {
         exclude 'META-INF/rxjava.properties'
@@ -43,4 +47,10 @@ dependencies {
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
     testCompile 'org.mockito:mockito-core:2.2.29'
+}
+
+def getApiKey(){
+    def Properties props = new Properties()
+    props.load(new FileInputStream(new File('local.properties')))
+    return props['API_KEY']
 }

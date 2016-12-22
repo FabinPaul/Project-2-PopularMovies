@@ -42,6 +42,7 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
     private static final int GRID_SPAN_COUNT = 2;
     private static final String TAG = MoviesHomeFragment.class.getSimpleName();
     private static final String CURRENT_POSITION = "com.fabinpaul.project_2_popularmovies.CurrentMoviePosition";
+    private static final String CURRENT_MOVIE = "com.fabinpaul.project_2_popularmovies.CurrentDetailMovie";
 
     @BindView(R.id.movies_recycvw_list)
     RecyclerView mMoviesRecycVw;
@@ -56,6 +57,7 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
     private boolean mIsTwoPaneLayout;
     private boolean isMoviesLoaded;
     private GridLayoutManager mGridLayoutManager;
+    private int mCurrentMoviePos;
 
     public void setAsTwoPaneLayout(boolean isTwoPaneLayout) {
         mIsTwoPaneLayout = isTwoPaneLayout;
@@ -97,6 +99,7 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
     public void onSaveInstanceState(Bundle outState) {
         mMoviesRepository.onSaveStateInstance(outState);
         outState.putInt(CURRENT_POSITION, mGridLayoutManager.findFirstVisibleItemPosition());
+        outState.putInt(CURRENT_MOVIE, mCurrentMoviePos);
         super.onSaveInstanceState(outState);
     }
 
@@ -107,6 +110,9 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
         if (savedInstanceState != null && savedInstanceState.containsKey(CURRENT_POSITION)) {
             int currentPosition = savedInstanceState.getInt(CURRENT_POSITION);
             mGridLayoutManager.scrollToPosition(currentPosition);
+        }
+        if (savedInstanceState != null && savedInstanceState.containsKey(CURRENT_MOVIE)) {
+            mCurrentMoviePos = savedInstanceState.getInt(CURRENT_MOVIE);
         }
     }
 
@@ -147,6 +153,8 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
             @Override
             public void onRefresh() {
                 Log.i(TAG, "onRefresh called from SwipeRefreshLayout");
+                if (mMoviesRecycVw != null)
+                    mMoviesRecycVw.setLayoutFrozen(true);
                 mMoviesListPresenter.refreshPage();
             }
         });
@@ -183,12 +191,15 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
         }
         if (!isMoviesLoaded) {
             mMoviesListPresenter.changeMovieSort(sortId);
+            if (mMoviesRecycVw != null)
+                mMoviesRecycVw.setLayoutFrozen(true);
             isMoviesLoaded = true;
         }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    private @MoviesListContract.MovieSortStatus
+    private
+    @MoviesListContract.MovieSortStatus
     int setUpDefaultOptionsMenu(Menu menu) {
         menu.findItem(R.id.movie_sort)
                 .getSubMenu()
@@ -234,8 +245,9 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
     }
 
     @Override
-    public void showMovieDetails(Movie pMovie) {
+    public void showMovieDetails(Movie pMovie, int pPosition) {
         if (getActivity() != null && pMovie != null) {
+            mCurrentMoviePos = pPosition;
             pMovie.setFavourite(mMoviesListPresenter.isFavouriteMovie(pMovie.getId()));
             ((Callback) getActivity()).onItemSelected(pMovie);
         } else {
@@ -278,11 +290,14 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
         if (mMoviesSwipeRefresh != null && mMoviesSwipeRefresh.isRefreshing()) {
             mMoviesSwipeRefresh.setRefreshing(false);
         }
+        if (mMoviesRecycVw != null && mMoviesRecycVw.isLayoutFrozen())
+            mMoviesRecycVw.setLayoutFrozen(false);
     }
 
     private void loadInitialDetailFragment() {
-        if (mIsTwoPaneLayout && getActivity() != null)
-            ((Callback) getActivity()).onItemSelected(mMoviesListPresenter.getMovie(0));
+        if (mIsTwoPaneLayout && getActivity() != null) {
+            ((Callback) getActivity()).onItemSelected(mMoviesListPresenter.getMovie(mCurrentMoviePos));
+        }
     }
 
     private int getMovieSortPreference() {
