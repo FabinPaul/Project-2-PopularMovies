@@ -43,6 +43,7 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
     private static final String TAG = MoviesHomeFragment.class.getSimpleName();
     private static final String CURRENT_POSITION = "com.fabinpaul.project_2_popularmovies.CurrentMoviePosition";
     private static final String CURRENT_MOVIE = "com.fabinpaul.project_2_popularmovies.CurrentDetailMovie";
+    private static final String CURRENT_TITLE = "com.fabinpaul.project_2_popularmovies.CurrentMoviTitle";
 
     @BindView(R.id.movies_recycvw_list)
     RecyclerView mMoviesRecycVw;
@@ -58,6 +59,7 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
     private boolean isMoviesLoaded;
     private GridLayoutManager mGridLayoutManager;
     private int mCurrentMoviePos;
+    private String mToolbarTitle;
 
     public void setAsTwoPaneLayout(boolean isTwoPaneLayout) {
         mIsTwoPaneLayout = isTwoPaneLayout;
@@ -100,6 +102,8 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
         mMoviesRepository.onSaveStateInstance(outState);
         outState.putInt(CURRENT_POSITION, mGridLayoutManager.findFirstVisibleItemPosition());
         outState.putInt(CURRENT_MOVIE, mCurrentMoviePos);
+        if (mToolbarTitle != null)
+            outState.putString(CURRENT_TITLE, mToolbarTitle);
         super.onSaveInstanceState(outState);
     }
 
@@ -113,6 +117,9 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
         }
         if (savedInstanceState != null && savedInstanceState.containsKey(CURRENT_MOVIE)) {
             mCurrentMoviePos = savedInstanceState.getInt(CURRENT_MOVIE);
+        }
+        if (savedInstanceState != null && savedInstanceState.containsKey(CURRENT_TITLE)) {
+            setToolbarTitle(savedInstanceState.getString(CURRENT_TITLE));
         }
     }
 
@@ -191,8 +198,6 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
         }
         if (!isMoviesLoaded) {
             mMoviesListPresenter.changeMovieSort(sortId);
-            if (mMoviesRecycVw != null)
-                mMoviesRecycVw.setLayoutFrozen(true);
             isMoviesLoaded = true;
         }
         super.onCreateOptionsMenu(menu, inflater);
@@ -258,7 +263,7 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
 
     @Override
     public void getFavouriteMovies() {
-        setToolbarTitle(getString(R.string.fav_movies));
+        prepareViewForRequest(getString(R.string.fav_movies));
         mMoviesListPresenter.getFavouriteMovies(new MoviesRepository.MoviesLoaderCallback() {
             @Override
             public void onSuccess() {
@@ -276,6 +281,7 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
 
     private void setToolbarTitle(String pTitle) {
         if (getActivity() != null) {
+            mToolbarTitle = pTitle;
             getActivity().setTitle(pTitle);
         }
     }
@@ -305,7 +311,7 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
     }
 
     public void getPopularMovies() {
-        setToolbarTitle(getString(R.string.popular_movies));
+        prepareViewForRequest(getString(R.string.popular_movies));
         mMoviesListPresenter.getPopularMovies(1, new MoviesRepository.MoviesRepositoryCallback() {
             @Override
             public void onSuccess() {
@@ -322,7 +328,7 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
     }
 
     public void getTopRatedMovies() {
-        setToolbarTitle(getString(R.string.top_rated_movies));
+        prepareViewForRequest(getString(R.string.top_rated_movies));
         mMoviesListPresenter.getTopRatedMovies(1, new MoviesRepository.MoviesRepositoryCallback() {
             @Override
             public void onSuccess() {
@@ -336,5 +342,12 @@ public class MoviesHomeFragment extends Fragment implements MoviesListContract.V
                 onRefreshComplete();
             }
         });
+    }
+
+    public void prepareViewForRequest(String title) {
+        mCurrentMoviePos = 0;
+        if (mMoviesRecycVw != null)
+            mMoviesRecycVw.setLayoutFrozen(true);
+        setToolbarTitle(title);
     }
 }

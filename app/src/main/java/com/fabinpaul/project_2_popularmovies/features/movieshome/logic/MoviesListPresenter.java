@@ -13,8 +13,9 @@ public class MoviesListPresenter implements MoviesListContract.UserActionsListen
 
     private final MoviesListContract.View mView;
     private final MoviesRepository mMoviesRepository;
-    private int mCurrentMovieSortId = 0;
-    private MoviesRepository.MoviesRepositoryCallback mCurrentCallback;
+    @MoviesListContract.MovieSortStatus
+    private static int sCurrentMovieSortId = 0;
+    private static MoviesRepository.MoviesRepositoryCallback sCurrentCallback;
 
     public MoviesListPresenter(MoviesListContract.View pView, MoviesRepository pMoviesRepository) {
         mView = pView;
@@ -30,17 +31,17 @@ public class MoviesListPresenter implements MoviesListContract.UserActionsListen
     }
 
     public void getPopularMovies(int pPageToLoad, @NonNull MoviesRepository.MoviesRepositoryCallback pCallback) {
-        mCurrentCallback = pCallback;
+        sCurrentCallback = pCallback;
         mMoviesRepository.getPopularMovies(pPageToLoad, pCallback, false);
     }
 
     public void getTopRatedMovies(int pPageToLoad, @NonNull MoviesRepository.MoviesRepositoryCallback pCallback) {
-        mCurrentCallback = pCallback;
+        sCurrentCallback = pCallback;
         mMoviesRepository.getTopRatedMovies(pPageToLoad, pCallback, false);
     }
 
     public void getFavouriteMovies(@NonNull MoviesRepository.MoviesLoaderCallback pCallback) {
-        mCurrentCallback = null;
+        sCurrentCallback = null;
         mMoviesRepository.getFavouriteMovies(pCallback);
     }
 
@@ -54,14 +55,15 @@ public class MoviesListPresenter implements MoviesListContract.UserActionsListen
 
     @Override
     public void moviesOnClick(int pPosition) {
-        mView.showMovieDetails(mMoviesRepository.getMovie(pPosition),pPosition);
+        mView.showMovieDetails(mMoviesRepository.getMovie(pPosition), pPosition);
     }
 
     @Override
     public void changeMovieSort(int pSortId) {
-        mCurrentMovieSortId = pSortId;
-        if (mCurrentMovieSortId == 0 && mMoviesRepository.getMovie(0) != null)
+        if (sCurrentMovieSortId == pSortId) {
             return;
+        }
+        sCurrentMovieSortId = pSortId;
         mMoviesRepository.clearMoviesList();
         if (pSortId == MoviesListContract.POPULAR_MOVIE) {
             mView.getPopularMovies();
@@ -76,12 +78,12 @@ public class MoviesListPresenter implements MoviesListContract.UserActionsListen
     public void loadMoreDataFromApi(int pPageToLoad) {
         if (mMoviesRepository.getTopPages() > 0 && pPageToLoad > mMoviesRepository.getTopPages())
             return;
-        switch (mCurrentMovieSortId) {
+        switch (sCurrentMovieSortId) {
             case MoviesListContract.POPULAR_MOVIE:
-                mMoviesRepository.getPopularMovies(pPageToLoad, mCurrentCallback, false);
+                mMoviesRepository.getPopularMovies(pPageToLoad, sCurrentCallback, false);
                 break;
             case MoviesListContract.TOP_RATED_MOVIE:
-                mMoviesRepository.getTopRatedMovies(pPageToLoad, mCurrentCallback, false);
+                mMoviesRepository.getTopRatedMovies(pPageToLoad, sCurrentCallback, false);
                 break;
         }
     }
@@ -89,12 +91,12 @@ public class MoviesListPresenter implements MoviesListContract.UserActionsListen
     @Override
     public void refreshPage() {
         mMoviesRepository.clearMoviesList();
-        if (mCurrentMovieSortId == MoviesListContract.POPULAR_MOVIE) {
-            mMoviesRepository.getPopularMovies(1, mCurrentCallback, true);
-        } else if (mCurrentMovieSortId == MoviesListContract.FAVOURITE_MOVIE) {
+        if (sCurrentMovieSortId == MoviesListContract.POPULAR_MOVIE) {
+            mMoviesRepository.getPopularMovies(1, sCurrentCallback, true);
+        } else if (sCurrentMovieSortId == MoviesListContract.FAVOURITE_MOVIE) {
             mView.getFavouriteMovies();
         } else {
-            mMoviesRepository.getTopRatedMovies(1, mCurrentCallback, true);
+            mMoviesRepository.getTopRatedMovies(1, sCurrentCallback, true);
         }
     }
 }
